@@ -44,9 +44,9 @@
   time: 20
   reagents:
     Mayo: 5
-    Rice: 10
   solids:
     FoodMeatChicken: 1
+    FoodRiceBoiled: 1
   recipeType: Oven # Frontier
 
 - type: microwaveMealRecipe
