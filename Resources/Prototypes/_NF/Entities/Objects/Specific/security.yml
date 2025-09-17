@@ -48,20 +48,20 @@
 
 # Uplinks
 - type: entity
-  parent: [ BaseItem, StorePresetSecurityUplink ]
+  parent: [ BaseItem, StorePresetSecurityUplink, BaseC2ContrabandUnredeemable ] #Corvax-Frontier КБ
   id: BaseSecurityUplinkRadio
-  name: nfsd uplink
+  name: NFSD uplink
   description: Retro looking old radio...
   suffix: Empty
   categories: [ HideSpawnMenu ]
   components:
   - type: Sprite
-    sprite: Objects/Devices/communication.rsi
+    sprite: Forge/Objects/Devices/NFSDUplink.rsi
     layers:
-    - state: old-radio
+    - state: icon
+      scale: "0.7,0.7"
   - type: Item
-    sprite: Objects/Devices/communication.rsi
-    heldPrefix: old-radio
+    sprite: Forge/Objects/Devices/NFSDUplink.rsi
   - type: UserInterface
     interfaces:
       enum.StoreUiKey.Key:
@@ -100,7 +100,7 @@
       FrontierUplinkCoin: 15
 
 - type: entity
-  name: nfsd deployable barrier
+  name: NFSD deployable barrier
   id: NfsdDeployableBarrier
   description: A deployable barrier. Swipe your ID card to lock/unlock it.
   parent: DeployableBarrier

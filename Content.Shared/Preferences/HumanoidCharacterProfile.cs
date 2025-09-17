@@ -7,6 +7,7 @@ using Content.Shared.Humanoid;
 using Content.Shared.Humanoid.Prototypes;
 using Content.Shared.Preferences.Loadouts;
 using Content.Shared.Roles;
+using Content.Shared._Forge.Speech.Synthesis; // Corvax-Frontier-Barks
 using Content.Shared.Traits;
 using Robust.Shared.Collections;
 using Robust.Shared.Configuration;
@@ -26,13 +27,14 @@ namespace Content.Shared.Preferences
     [Serializable, NetSerializable]
     public sealed partial class HumanoidCharacterProfile : ICharacterProfile
     {
-        private static readonly Regex RestrictedNameRegex = new("[^а-яА-Яa-zA-Z-'0-9\\ ]"); // Corvax-Localization
+        private static readonly Regex RestrictedNameRegex = new(@"[^а-яА-Яa-zA-Z-'0-9 '\-]"); // Corvax-Localization
         private static readonly Regex ICNameCaseRegex = new(@"^(?<word>\w)|\b(?<word>\w)(?=\w*$)");
 
         public const int MaxNameLength = 32;
+        public const int MaxLoadoutNameLength = 32;
         public const int MaxDescLength = 1024; // Corvax-MRP
 
-        public const int DefaultBalance = 25000;
+        public const int DefaultBalance = 30000;
 
         //private readonly Dictionary<string, JobPriority> _jobPriorities; // Frontier: commented out during merge.
         //private readonly List<string> _antagPreferences; // Frontier: commented out during merge.
@@ -83,6 +85,9 @@ namespace Content.Shared.Preferences
         /// </summary>
         [DataField]
         public ProtoId<SpeciesPrototype> Species { get; set; } = SharedHumanoidAppearanceSystem.DefaultSpecies;
+
+        [DataField] // Corvax-Frontier-Barks
+        public string BarkVoice { get; set; } = SharedHumanoidAppearanceSystem.DefaultBarkVoice; // Corvax-Frontier-Barks
 
         [DataField]
         public int Age { get; set; } = 18;
@@ -149,7 +154,8 @@ namespace Content.Shared.Preferences
             PreferenceUnavailableMode preferenceUnavailable,
             HashSet<ProtoId<AntagPrototype>> antagPreferences,
             HashSet<ProtoId<TraitPrototype>> traitPreferences,
-            Dictionary<string, RoleLoadout> loadouts)
+            Dictionary<string, RoleLoadout> loadouts,
+            string barkVoice) // Corvax-Frontier-Barks
         {
             Name = name;
             FlavorText = flavortext;
@@ -165,6 +171,7 @@ namespace Content.Shared.Preferences
             _antagPreferences = antagPreferences;
             _traitPreferences = traitPreferences;
             _loadouts = loadouts;
+            BarkVoice = barkVoice; // Corvax-Frontier-Barks
         }
 
         /// <summary>Copy constructor but with overridable references (to prevent useless copies)</summary>
@@ -175,7 +182,7 @@ namespace Content.Shared.Preferences
             HashSet<ProtoId<TraitPrototype>> traitPreferences,
             Dictionary<string, RoleLoadout> loadouts)
             : this(other.Name, other.FlavorText, other.Species, other.Age, other.Sex, other.Gender, other.BankBalance, other.Appearance, other.SpawnPriority,
-                jobPriorities, other.PreferenceUnavailable, antagPreferences, traitPreferences, loadouts)
+                jobPriorities, other.PreferenceUnavailable, antagPreferences, traitPreferences, loadouts, other.BarkVoice)
         {
         }
 
@@ -194,7 +201,8 @@ namespace Content.Shared.Preferences
                 other.PreferenceUnavailable,
                 new HashSet<ProtoId<AntagPrototype>>(other.AntagPreferences),
                 new HashSet<ProtoId<TraitPrototype>>(other.TraitPreferences),
-                new Dictionary<string, RoleLoadout>(other.Loadouts))
+                new Dictionary<string, RoleLoadout>(other.Loadouts),
+                other.BarkVoice) // Corvax-Frontier-Barks
         {
         }
 
@@ -248,6 +256,13 @@ namespace Content.Shared.Preferences
                 age = random.Next(speciesPrototype.MinAge, speciesPrototype.OldAge); // people don't look and keep making 119 year old characters with zero rp, cap it at middle aged
             }
 
+            // Corvax-Frontier-Barks-start
+            var barkvoiceId = random.Pick(prototypeManager
+                .EnumeratePrototypes<BarkPrototype>()
+                .ToArray()
+            ).ID;
+            // Corvax-Frontier-Barks-end
+
             var gender = Gender.Epicene;
 
             switch (sex)
@@ -269,6 +284,7 @@ namespace Content.Shared.Preferences
                 Gender = gender,
                 Species = species,
                 Appearance = HumanoidCharacterAppearance.Random(species, sex),
+                BarkVoice = barkvoiceId, // Corvax-Frontier-Barks
             };
         }
 
@@ -319,6 +335,13 @@ namespace Content.Shared.Preferences
         {
             return new(this) { SpawnPriority = spawnPriority };
         }
+
+        // Corvax-Frontier-Barks-start
+        public HumanoidCharacterProfile WithBarkVoice(string barkVoice)
+        {
+            return new(this) { BarkVoice = barkVoice };
+        }
+        // Corvax-Frontier-Barks-end
 
         public HumanoidCharacterProfile WithJobPriorities(IEnumerable<KeyValuePair<ProtoId<JobPrototype>, JobPriority>> jobPriorities)
         {
@@ -474,24 +497,89 @@ namespace Content.Shared.Preferences
         // Frontier
         public string BankBalanceText => BankSystemExtensions.ToSpesoString(BankBalance);
 
-        public bool MemberwiseEquals(ICharacterProfile maybeOther)
+        // Forge-Change-Start
+        public bool MemberwiseEquals(ICharacterProfile maybeOther, out string? error)
         {
-            if (maybeOther is not HumanoidCharacterProfile other) return false;
-            if (Name != other.Name) return false;
-            if (Age != other.Age) return false;
-            if (Sex != other.Sex) return false;
-            if (Gender != other.Gender) return false;
-            if (Species != other.Species) return false;
-            if (BankBalance != other.BankBalance) return false; // Frontier
-            if (PreferenceUnavailable != other.PreferenceUnavailable) return false;
-            if (SpawnPriority != other.SpawnPriority) return false;
-            if (!_jobPriorities.SequenceEqual(other._jobPriorities)) return false;
-            if (!_antagPreferences.SequenceEqual(other._antagPreferences)) return false;
-            if (!_traitPreferences.SequenceEqual(other._traitPreferences)) return false;
-            if (!Loadouts.SequenceEqual(other.Loadouts)) return false;
-            if (FlavorText != other.FlavorText) return false;
-            return Appearance.MemberwiseEquals(other.Appearance);
+            if (maybeOther is not HumanoidCharacterProfile other)
+            {
+                error = $"Не является профилем {maybeOther.Name}";
+                return false;
+            }
+            if (Name != other.Name)
+            {
+                error = $"Имя: {Name} не совпадает с {other.Name}";
+                return false;
+            }
+            if (Age != other.Age)
+            {
+                error = $"Возраст: {Age} не совпадает с {other.Age}";
+                return false;
+            }
+            if (Sex != other.Sex)
+            {
+                error = $"Пол: {Sex} не совпадает с {other.Sex}";
+                return false;
+            }
+            if (Gender != other.Gender)
+            {
+                error = $"Гендер: {Gender} не совпадает с {other.Gender}";
+                return false;
+            }
+            if (Species != other.Species)
+            {
+                error = $"Вид: {Species} не совпадает с {other.Species}";
+                return false;
+            }
+            if (BankBalance != other.BankBalance) // Frontier
+            {
+                error = $"Баланс банка: {BankBalance} не совпадает с {other.BankBalance}";
+                return false;
+            }
+            if (BarkVoice != other.BarkVoice) // Forge-Barks
+            {
+                error = $"Голос: {BarkVoice} не совпадает с {other.BarkVoice}";
+                return false;
+            }
+            if (PreferenceUnavailable != other.PreferenceUnavailable)
+            {
+                error = $"Настройки: {PreferenceUnavailable} не совпадают с {other.PreferenceUnavailable}";
+                return false;
+            }
+            if (SpawnPriority != other.SpawnPriority)
+            {
+                error = $"Приоритет спавна: {SpawnPriority} не совпадает с {other.SpawnPriority}";
+                return false;
+            }
+            if (!_jobPriorities.SequenceEqual(other._jobPriorities))
+            {
+                error = $"Приоритеты работы не совпадают";
+                return false;
+            }
+            if (!_antagPreferences.SequenceEqual(other._antagPreferences))
+            {
+                error = $"Настройки антагов не совпадают";
+                return false;
+            }
+            if (!_traitPreferences.SequenceEqual(other._traitPreferences))
+            {
+                error = $"Настройки черт не совпадают";
+                return false;
+            }
+            if (!Loadouts.SequenceEqual(other.Loadouts))
+            {
+                error = $"Наборы не совпадают";
+                return false;
+            }
+            if (FlavorText != other.FlavorText)
+            {
+                error = $"Текст: {FlavorText} не совпадает с {other.FlavorText}";
+                return false;
+            }
+            var valid = Appearance.MemberwiseEquals(other.Appearance, out var error1);
+            error = error1;
+            return valid;
         }
+        // Forge-Change-End
 
         public void EnsureValid(ICommonSession session, IDependencyCollection collection)
         {
@@ -502,7 +590,33 @@ namespace Content.Shared.Preferences
             {
                 Species = SharedHumanoidAppearanceSystem.DefaultSpecies;
                 speciesPrototype = prototypeManager.Index(Species);
+
             }
+            // Forge-Change-blacklistrace
+#if !DEBUG
+            if (speciesPrototype.JobWhitelist != null)
+            {
+                foreach (var jid in _jobPriorities.Keys.ToList())
+                {
+                    if (!speciesPrototype.JobWhitelist.Contains(jid))
+                        _jobPriorities.Remove(jid);
+                }
+            }
+            else if (speciesPrototype.JobBlacklist != null)
+            {
+                foreach (var jid in _jobPriorities.Keys.ToList())
+                {
+                    if (speciesPrototype.JobBlacklist.Contains(jid))
+                        _jobPriorities.Remove(jid);
+                }
+            }
+
+            if (_jobPriorities.Count == 0)
+                PreferenceUnavailable = PreferenceUnavailableMode.StayInLobby;
+#endif
+            // Forge-Change-blacklistrace
+
+
 
             var sex = Sex switch
             {
@@ -528,13 +642,14 @@ namespace Content.Shared.Preferences
             };
 
             string name;
+            var maxNameLength = configManager.GetCVar(CCVars.MaxNameLength);
             if (string.IsNullOrEmpty(Name))
             {
                 name = GetName(Species, gender);
             }
-            else if (Name.Length > MaxNameLength)
+            else if (Name.Length > maxNameLength)
             {
-                name = Name[..MaxNameLength];
+                name = Name[..maxNameLength];
             }
             else
             {
@@ -554,7 +669,7 @@ namespace Content.Shared.Preferences
                  * 00F8-00FF  Latin-1 Supplement: Letters III
                  * 0100-017F  Latin Extended A: European Latin
                  */
-				 name = RestrictedNameRegex.Replace(name, string.Empty);
+                name = RestrictedNameRegex.Replace(name, string.Empty);
             }
 
             if (configManager.GetCVar(CCVars.ICNameCase))
@@ -569,9 +684,10 @@ namespace Content.Shared.Preferences
             }
 
             string flavortext;
-            if (FlavorText.Length > MaxDescLength)
+            var maxFlavorTextLength = configManager.GetCVar(CCVars.MaxFlavorTextLength);
+            if (FlavorText.Length > maxFlavorTextLength)
             {
-                flavortext = FormattedMessage.RemoveMarkupOrThrow(FlavorText)[..MaxDescLength];
+                flavortext = FormattedMessage.RemoveMarkupOrThrow(FlavorText)[..maxFlavorTextLength];
             }
             else
             {
@@ -751,6 +867,7 @@ namespace Content.Shared.Preferences
             hashCode.Add((int)Gender);
             hashCode.Add(Appearance);
             hashCode.Add(BankBalance); // Frontier
+            hashCode.Add(BarkVoice); // Corvax-Frontier-Barks
             hashCode.Add((int)SpawnPriority);
             hashCode.Add((int)PreferenceUnavailable);
             return hashCode.ToHashCode();

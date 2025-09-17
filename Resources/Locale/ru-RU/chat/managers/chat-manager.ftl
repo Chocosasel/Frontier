@@ -18,7 +18,7 @@ chat-manager-no-such-channel = Нет канала с ключём '{ $key }'!
 chat-manager-whisper-headset-on-message = Вы не можете шептать в радио!
 chat-manager-server-wrap-message = [bold]{ $message }[/bold]
 chat-manager-sender-announcement = Центральное Командование
-chat-manager-sender-announcement-wrap-message =    [font size=14][bold]Объявление { $sender }:[/font][font size=12]
+chat-manager-sender-announcement-wrap-message = [font size=14][bold]Объявление { $sender }:[/font][font size=12]
     { $message }[/bold][/font]
 chat-manager-entity-say-wrap-message = [BubbleHeader][bold][Name]{ $entityName }[/Name][/bold][/BubbleHeader] { $verb }, [font={ $fontType } size={ $fontSize } ]"[BubbleContent]{ $message }[/BubbleContent]"[/font]
 chat-manager-entity-say-bold-wrap-message = [BubbleHeader][bold][Name]{ $entityName }[/Name][/bold][/BubbleHeader] { $verb }, [font={ $fontType } size={ $fontSize }]"[BubbleContent][bold]{ $message }[/bold][/BubbleContent]"[/font]
@@ -121,3 +121,7 @@ chat-speech-verb-name-electricity = Электричество
 chat-speech-verb-electricity-1 = трещит
 chat-speech-verb-electricity-2 = гудит
 chat-speech-verb-electricity-3 = скрипит
+chat-speech-verb-name-goat = Козел
+chat-speech-verb-goat-1 = блеет
+chat-speech-verb-goat-2 = хрюкает
+chat-speech-verb-goat-3 = плачет

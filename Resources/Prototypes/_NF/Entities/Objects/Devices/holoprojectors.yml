@@ -1,23 +1,27 @@
 - type: entity
   parent: [ HoloprojectorSecurity, BaseC2ContrabandUnredeemable ]
   id: HoloprojectorNfsd
-  name: nfsd holobarrier projector
+  name: NFSD holobarrier projector
   description: Creates a solid but fragile holographic barrier.
   components:
   - type: Sprite
     sprite: _NF/Objects/Devices/Holoprojectors/nfsd.rsi
     state: icon
+  - type: Item
+    sprite: _NF/Objects/Devices/Holoprojectors/nfsd.rsi
   - type: HolosignProjector
     signProto: HolosignNfsd
 
 - type: entity
-  parent: HoloprojectorSecurityEmpty
+  parent: [HoloprojectorSecurityEmpty, BaseC2ContrabandUnredeemable] #Corvax-Frontier КБ
   id: HoloprojectorNfsdEmpty
   suffix: Empty
   components:
   - type: Sprite
     sprite: _NF/Objects/Devices/Holoprojectors/nfsd.rsi
     state: icon
+  - type: Item
+    sprite: _NF/Objects/Devices/Holoprojectors/nfsd.rsi
   - type: HolosignProjector
     signProto: HolosignNfsd
   - type: ItemSlots
@@ -37,6 +41,8 @@
   - type: Sprite
     sprite: _NF/Objects/Devices/Holoprojectors/graffiti.rsi
     state: icon
+  - type: Item
+    sprite: _NF/Objects/Devices/Holoprojectors/graffiti.rsi
   - type: Tag
     tags:
     - HolofanProjector

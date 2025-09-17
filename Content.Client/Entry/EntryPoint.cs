@@ -4,6 +4,7 @@ using Content.Client.Chat.Managers;
 using Content.Client.DebugMon;
 using Content.Client.Eui;
 using Content.Client.Fullscreen;
+using Content.Client.GameTicking.Managers;
 using Content.Client.GhostKick;
 using Content.Client.Guidebook;
 using Content.Client.Input;
@@ -18,6 +19,7 @@ using Content.Client.Replay;
 using Content.Client.Screenshot;
 using Content.Client.Singularity;
 using Content.Client.Stylesheets;
+using Content.Client.UserInterface;
 using Content.Client.Viewport;
 using Content.Client.Voting;
 using Content.Shared.Ame.Components;
@@ -36,6 +38,8 @@ using Robust.Shared.Prototypes;
 using Robust.Shared.Replays;
 using Robust.Shared.Timing;
 using Content.Client._NF.Emp.Overlays; // Frontier
+using Content.Client._Forge.DiscordAuth; // Forge-Change
+using Content.Client._Forge.Sponsors; // Forge-Change
 
 namespace Content.Client.Entry
 {
@@ -70,8 +74,11 @@ namespace Content.Client.Entry
         [Dependency] private readonly IResourceManager _resourceManager = default!;
         [Dependency] private readonly IReplayLoadManager _replayLoad = default!;
         [Dependency] private readonly ILogManager _logManager = default!;
-        [Dependency] private readonly ContentReplayPlaybackManager _replayMan = default!;
         [Dependency] private readonly DebugMonitorManager _debugMonitorManager = default!;
+        [Dependency] private readonly TitleWindowManager _titleWindowManager = default!;
+        [Dependency] private readonly IEntitySystemManager _entitySystemManager = default!;
+        [Dependency] private readonly DiscordAuthManager _discordAuth = default!; // Forge-Change
+        [Dependency] private readonly SponsorManager _sponsorMan = default!; // Forge-Change
 
         public override void Init()
         {
@@ -79,7 +86,7 @@ namespace Content.Client.Entry
 
             foreach (var callback in TestingCallbacks)
             {
-                var cast = (ClientModuleTestingCallbacks) callback;
+                var cast = (ClientModuleTestingCallbacks)callback;
                 cast.ClientBeforeIoC?.Invoke();
             }
 
@@ -122,6 +129,8 @@ namespace Content.Client.Entry
             _prototypeManager.RegisterIgnore("alertLevels");
             _prototypeManager.RegisterIgnore("nukeopsRole");
             _prototypeManager.RegisterIgnore("ghostRoleRaffleDecider");
+            _prototypeManager.RegisterIgnore("pointOfInterest"); // Frontier: worldgen-related, server-only
+            _prototypeManager.RegisterIgnore("publicTransitRoute"); // Frontier: worldgen-related, server-only
 
             _componentFactory.GenerateNetIds();
             _adminManager.Initialize();
@@ -133,6 +142,7 @@ namespace Content.Client.Entry
             _extendedDisconnectInformation.Initialize();
             _jobRequirements.Initialize();
             _playbackMan.Initialize();
+            _sponsorMan.Initialize(); // Forge-Change
 
             //AUTOSCALING default Setup!
             _configManager.SetCVar("interface.resolutionAutoScaleUpperCutoffX", 1080);
@@ -140,6 +150,12 @@ namespace Content.Client.Entry
             _configManager.SetCVar("interface.resolutionAutoScaleLowerCutoffX", 520);
             _configManager.SetCVar("interface.resolutionAutoScaleLowerCutoffY", 240);
             _configManager.SetCVar("interface.resolutionAutoScaleMinimum", 0.5f);
+        }
+
+        public override void Shutdown()
+        {
+            base.Shutdown();
+            _titleWindowManager.Shutdown();
         }
 
         public override void PostInit()
@@ -163,6 +179,8 @@ namespace Content.Client.Entry
             _userInterfaceManager.SetDefaultTheme("SS14DefaultTheme");
             _userInterfaceManager.SetActiveTheme(_configManager.GetCVar(CVars.InterfaceTheme));
             _documentParsingManager.Initialize();
+            _titleWindowManager.Initialize();
+            _discordAuth.Initialize(); // Forge-Change
 
             _baseClient.RunLevelChanged += (_, args) =>
             {
@@ -194,7 +212,7 @@ namespace Content.Client.Entry
                     _resourceManager,
                     ReplayConstants.ReplayZipFolder.ToRootedPath());
 
-                _replayMan.LastLoad = (null, ReplayConstants.ReplayZipFolder.ToRootedPath());
+                _playbackMan.LastLoad = (null, ReplayConstants.ReplayZipFolder.ToRootedPath());
                 _replayLoad.LoadAndStartReplay(reader);
             }
             else if (_gameController.LaunchState.FromLauncher)
@@ -218,6 +236,15 @@ namespace Content.Client.Entry
             if (level == ModUpdateLevel.FramePreEngine)
             {
                 _debugMonitorManager.FrameUpdate();
+            }
+
+            if (level == ModUpdateLevel.PreEngine)
+            {
+                if (_baseClient.RunLevel is ClientRunLevel.InGame or ClientRunLevel.SinglePlayerGame)
+                {
+                    var updateSystem = _entitySystemManager.GetEntitySystem<BuiPreTickUpdateSystem>();
+                    updateSystem.RunUpdates();
+                }
             }
         }
     }

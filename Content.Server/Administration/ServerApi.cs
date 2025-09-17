@@ -6,8 +6,8 @@ using System.Text;
 using System.Text.Json;
 using System.Text.Json.Nodes;
 using System.Threading.Tasks;
-using Content.Server.Administration.Managers;
 using Content.Server.Administration.Systems;
+using Content.Server.Administration.Managers;
 using Content.Server.Database;
 using Content.Server.GameTicking;
 using Content.Server.GameTicking.Presets;
@@ -17,6 +17,7 @@ using Content.Server.RoundEnd;
 using Content.Shared.Administration;
 using Content.Shared.Administration.Managers;
 using Content.Shared.CCVar;
+using Content.Shared.Database;
 using Content.Shared.GameTicking.Components;
 using Content.Shared.Prototypes;
 using Robust.Server.ServerStatus;
@@ -52,7 +53,7 @@ public sealed partial class ServerApi : IPostInjectInit
     [Dependency] private readonly IStatusHost _statusHost = default!;
     [Dependency] private readonly IConfigurationManager _config = default!;
     [Dependency] private readonly ISharedPlayerManager _playerManager = default!;
-    [Dependency] private readonly ISharedAdminManager _adminManager = default!;
+    [Dependency] private readonly IAdminManager _adminManager = default!; // Frontier: ISharedAdminManager<IAdminManager>
     [Dependency] private readonly IGameMapManager _gameMapManager = default!;
     [Dependency] private readonly IServerNetManager _netManager = default!;
     [Dependency] private readonly IPrototypeManager _prototypeManager = default!;
@@ -85,11 +86,15 @@ public sealed partial class ServerApi : IPostInjectInit
         RegisterActorHandler(HttpMethod.Post, "/admin/actions/round/end", ActionRoundEnd);
         RegisterActorHandler(HttpMethod.Post, "/admin/actions/round/restartnow", ActionRoundRestartNow);
         RegisterActorHandler(HttpMethod.Post, "/admin/actions/kick", ActionKick);
+        RegisterActorHandler(HttpMethod.Post, "/admin/actions/ban", ActionBan); // Forge-Change
+        RegisterActorHandler(HttpMethod.Post, "/admin/actions/pardon", ActionPardon); // Forge-Change
         RegisterActorHandler(HttpMethod.Post, "/admin/actions/add_game_rule", ActionAddGameRule);
         RegisterActorHandler(HttpMethod.Post, "/admin/actions/end_game_rule", ActionEndGameRule);
         RegisterActorHandler(HttpMethod.Post, "/admin/actions/force_preset", ActionForcePreset);
         RegisterActorHandler(HttpMethod.Post, "/admin/actions/set_motd", ActionForceMotd);
         RegisterActorHandler(HttpMethod.Patch, "/admin/actions/panic_bunker", ActionPanicPunker);
+        // Frontier Discord Ahelp
+        // RegisterHandler(HttpMethod.Post, "/admin/actions/send_bwoink", ActionSendBwoink); // Frontier - Discord Ahelp Reply
     }
 
     public void Initialize()
@@ -347,6 +352,118 @@ public sealed partial class ServerApi : IPostInjectInit
         });
     }
 
+    // Forge-Change-Start
+    private async Task ActionBan(IStatusHandlerContext context, Actor actor)
+    {
+        var body = await ReadJson<BanActionBody>(context);
+        if (body == null)
+            return;
+
+        await RunOnMainThread(async () =>
+        {
+            var data = await _locator.LookupIdByNameOrIdAsync($"{body.TargetUsername}");
+            if (data == null)
+            {
+                await context.RespondJsonAsync(
+                    new { Error = "Player not found", },
+                    HttpStatusCode.NotFound);
+                return;
+            }
+
+            var admin = await _locator.LookupIdByNameOrIdAsync($"{actor.Guid}");
+            if (admin == null)
+            {
+                await context.RespondJsonAsync(
+                    new { Error = "Admin not found", },
+                    HttpStatusCode.NotFound);
+                return;
+            }
+
+            var adminData = await _db.GetAdminDataForAsync(admin.UserId);
+            if (adminData == null)
+            {
+                await context.RespondJsonAsync(
+                    new { Error = "Is not admin", },
+                    HttpStatusCode.NotFound);
+                return;
+            }
+
+            var targetHWid = data.LastHWId;
+            var targetId = data.UserId;
+            var targetUsername = data.Username;
+            var reason = body.Reason ?? "No reason supplied";
+            reason += " (banned by admin)";
+
+            if (body.Reason != null)
+                _bans.CreateServerBan(targetId, targetUsername, admin.UserId,null, targetHWid, (uint)body.Minutes, (NoteSeverity)body.Severity, body.Reason);
+            else
+                _bans.CreateServerBan(targetId, targetUsername, admin.UserId,null, targetHWid, (uint)body.Minutes, (NoteSeverity)body.Severity, "No reason");
+
+            await RespondOk(context);
+
+            _sawmill.Info($"Banned player {data.Username} ({data.UserId}) for {reason} by {FormatLogActor(actor)} to {body.Minutes}");
+        });
+    }
+
+    private async Task ActionPardon(IStatusHandlerContext context, Actor actor)
+    {
+        var body = await ReadJson<PardonActionBody>(context);
+        if (body == null)
+        {
+            await context.RespondErrorAsync(HttpStatusCode.BadRequest);
+            return;
+        }
+
+        await RunOnMainThread(async () =>
+        {
+            var admin = await _locator.LookupIdByNameOrIdAsync($"{actor.Guid}");
+            if (admin == null)
+            {
+                await context.RespondJsonAsync(
+                    new { Error = "Admin not found", },
+                    HttpStatusCode.NotFound);
+                return;
+            }
+
+            var adminData = await _db.GetAdminDataForAsync(admin.UserId);
+            if (adminData == null)
+            {
+                await context.RespondJsonAsync(
+                    new { Error = "Is not admin", },
+                    HttpStatusCode.NotFound);
+                return;
+            }
+
+            var banId = body.BanId;
+
+            var ban = await _db.GetServerBanAsync(banId);
+
+            if (ban == null)
+            {
+                await context.RespondJsonAsync(
+                    new { Error = "Ban not found", },
+                    HttpStatusCode.NotFound);
+                return;
+            }
+
+            if (ban.Unban != null)
+            {
+                await context.RespondJsonAsync(
+                    new { Error = "Ban already pardoned", },
+                    HttpStatusCode.Conflict);
+                return;
+            }
+
+            await _db.AddServerUnbanAsync(new ServerUnbanDef(banId, admin.UserId, DateTimeOffset.Now));
+
+            await context.RespondJsonAsync(
+                new { Message = "Ban successfully pardoned", });
+
+            _sawmill.Info($"Ban {banId} pardoned by {admin}");
+        });
+    }
+    // Forge-Change-End
+
     private async Task ActionRoundStart(IStatusHandlerContext context, Actor actor)
     {
         await RunOnMainThread(async () =>
@@ -403,6 +520,41 @@ public sealed partial class ServerApi : IPostInjectInit
             await RespondOk(context);
         });
     }
+    #endregion
+    // Frontier Discord Ahelp
+    #region Frontier
+    // Creating a region here incase more actions are added in the future
+
+    /*private async Task ActionSendBwoink(IStatusHandlerContext context)
+    {
+        var body = await ReadJson<BwoinkActionBody>(context);
+        if (body == null)
+            return;
+
+        await RunOnMainThread(async () =>
+    {
+        // Player not online or wrong Guid
+        if (!_playerManager.TryGetSessionById(new NetUserId(body.Guid), out var player))
+        {
+            await RespondError(
+                context,
+                ErrorCode.PlayerNotFound,
+                HttpStatusCode.UnprocessableContent,
+                "Player not found");
+            return;
+        }
+
+        var serverBwoinkSystem = _entitySystemManager.GetEntitySystem<BwoinkSystem>();
+        var message = new SharedBwoinkSystem.BwoinkTextMessage(player.UserId, SharedBwoinkSystem.SystemUserId, body.Text, adminOnly: body.AdminOnly);
+        serverBwoinkSystem.OnWebhookBwoinkTextMessage(message, body);
+
+        // Respond with OK
+        await RespondOk(context);
+    });
+
+
+    }*/
+    #endregion
 
     private async Task ActionAhelpSend(IStatusHandlerContext context, Actor actor)
     {
@@ -432,8 +584,6 @@ public sealed partial class ServerApi : IPostInjectInit
             });
         }
     }
-
-    #endregion
 
     #region Fetching
 
@@ -659,6 +809,21 @@ public sealed partial class ServerApi : IPostInjectInit
         public string? Reason { get; init; }
     }
 
+    // Forge-Change-Start
+    private sealed class BanActionBody
+    {
+        public int Minutes { get; init; }
+        public int Severity { get; init; }
+        public string? TargetUsername { get; init; }
+        public string? Reason { get; init; }
+    }
+
+    private sealed class PardonActionBody
+    {
+        public int BanId { get; init; }
+    }
+    // Forge-Change-End
+
     private sealed class GameRuleActionBody
     {
         public required string GameRuleId { get; init; }
@@ -673,6 +838,17 @@ public sealed partial class ServerApi : IPostInjectInit
     {
         public required string Motd { get; init; }
     }
+
+    // Frontier Discord Ahelp
+    /*public sealed class BwoinkActionBody
+    {
+        public required string Text { get; init; }
+        public required string Username { get; init; }
+        public required Guid Guid { get; init; }
+        public bool UserOnly { get; init; }
+        public required bool WebhookUpdate { get; init; }
+        public bool AdminOnly { get; init; }
+    }*/
 
     #endregion
 

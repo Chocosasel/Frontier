@@ -59,11 +59,11 @@
   - type: Butcherable
     spawned:
     - id: FoodMeatSlime
-      amount: 2    
+      amount: 2
     - id: MaterialHideRosyMothroach
       amount: 1
       prob: 0.3
-      
+
 - type: entity
   name: bee
   suffix: Angry, Timed
@@ -79,3 +79,9 @@
   - type: TimedDespawn
     lifetime: 15
 
+- type: entity
+  id: MobMonkeyNoInventory
+  parent: MobMonkey
+  components:
+  - type: Inventory
+    templateId: empty

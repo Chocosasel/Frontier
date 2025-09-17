@@ -16,6 +16,7 @@ using Robust.Client.UserInterface.CustomControls;
 using Robust.Shared.Console;
 using Robust.Shared.Graphics;
 using Robust.Shared.Input;
+using Content.Shared.Damage; // Forge Change
 using Robust.Shared.Input.Binding;
 using Robust.Shared.Map;
 using Robust.Shared.Player;
@@ -104,6 +105,12 @@ namespace Content.Client.Gameplay
             return GetClickedEntity(coordinates, _eyeManager.CurrentEye);
         }
 
+        public EntityUid? GetDamageableClickedEntity(MapCoordinates coordinates) // Forge Change
+        {
+            var first = GetClickableEntities(coordinates, _eyeManager.CurrentEye)
+                .FirstOrDefault(e => _entityManager.HasComponent<DamageableComponent>(e));
+            return first.IsValid() ? first : null;
+        } // Forge Change
         public EntityUid? GetClickedEntity(MapCoordinates coordinates, IEye? eye)
         {
             if (eye == null)
@@ -113,18 +120,18 @@ namespace Content.Client.Gameplay
             return first.IsValid() ? first : null;
         }
 
-        public IEnumerable<EntityUid> GetClickableEntities(EntityCoordinates coordinates)
+        public IEnumerable<EntityUid> GetClickableEntities(EntityCoordinates coordinates, bool excludeFaded = true)
         {
             var transformSystem = _entitySystemManager.GetEntitySystem<SharedTransformSystem>();
-            return GetClickableEntities(transformSystem.ToMapCoordinates(coordinates));
+            return GetClickableEntities(transformSystem.ToMapCoordinates(coordinates), excludeFaded);
         }
 
-        public IEnumerable<EntityUid> GetClickableEntities(MapCoordinates coordinates)
+        public IEnumerable<EntityUid> GetClickableEntities(MapCoordinates coordinates, bool excludeFaded = true)
         {
-            return GetClickableEntities(coordinates, _eyeManager.CurrentEye);
+            return GetClickableEntities(coordinates, _eyeManager.CurrentEye, excludeFaded);
         }
 
-        public IEnumerable<EntityUid> GetClickableEntities(MapCoordinates coordinates, IEye? eye)
+        public IEnumerable<EntityUid> GetClickableEntities(MapCoordinates coordinates, IEye? eye, bool excludeFaded = true)
         {
             /*
              * TODO:
@@ -147,7 +154,7 @@ namespace Content.Client.Gameplay
             foreach (var entity in entities)
             {
                 if (clickQuery.TryGetComponent(entity.Uid, out var component) &&
-                    clickables.CheckClick((entity.Uid, component, entity.Component, entity.Transform), coordinates.Position, eye,  out var drawDepthClicked, out var renderOrder, out var bottom))
+                    clickables.CheckClick((entity.Uid, component, entity.Component, entity.Transform), coordinates.Position, eye, excludeFaded, out var drawDepthClicked, out var renderOrder, out var bottom))
                 {
                     foundEntities.Add((entity.Uid, drawDepthClicked, renderOrder, bottom));
                 }
@@ -219,10 +226,12 @@ namespace Content.Client.Gameplay
                 {
                     entityToClick = GetClickedEntity(mousePosWorld);
                 }
+                var transformSystem = _entitySystemManager.GetEntitySystem<SharedTransformSystem>();
+                var mapSystem = _entitySystemManager.GetEntitySystem<MapSystem>();
 
-                coordinates = _mapManager.TryFindGridAt(mousePosWorld, out _, out var grid) ?
-                    grid.MapToGrid(mousePosWorld) :
-                    EntityCoordinates.FromMap(_mapManager, mousePosWorld);
+                coordinates = _mapManager.TryFindGridAt(mousePosWorld, out var uid, out _) ?
+                    mapSystem.MapToGrid(uid, mousePosWorld) :
+                    transformSystem.ToCoordinates(mousePosWorld);
             }
             else
             {

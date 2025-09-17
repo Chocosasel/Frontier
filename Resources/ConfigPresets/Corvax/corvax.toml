@@ -5,7 +5,7 @@ pvs_range = 20.0
 pvs_priority_range = 30.0
 pvs_budget = 50
 pvs_enter_budget = 200
-tickrate = 30
+tickrate = 60
 lidgren_log_warning = false
 lidgren_log_error = false
 
@@ -34,9 +34,6 @@ space_wind_max_velocity = 22.0
 [game.panic_bunker]
 enabled = false
 
-[game.baby_jail]
-enabled = false
-
 [lookup]
 enlargement_range = 10.0
 
@@ -45,7 +42,6 @@ fov_color = "#000000FF"
 
 [salvage]
 expedition_cooldown = 300.0
-expedition_failed_cooldown = 600.0
 
 [audio]
 attenuation = 16
@@ -61,6 +57,8 @@ grid_fixture_enlargement = -0.0099999997764826
 relative_movement = true
 tile_friction = 40.0
 stop_speed = 0.100000001490116
+
+[movement]
 mob_pushing = false
 
 [interface]
@@ -97,14 +95,14 @@ id = "frontier_main"
 rules_file = "FrontierRuleset"
 
 [infolinks]
-discord = "https://discord.gg/corvax-forge"
+discord = "https://discord.gg/Forge-Change"
 forum = ""
 github = "https://github.com/Corvax-Frontier/Frontier"
 website = ""
 wiki = "https://station14.ru/wiki/Портал:Frontier"
 patreon = "https://boosty.to/corvax-frontier"
 bug_report = ""
-appeal = "https://discord.gg/corvax-forge"
+appeal = "https://discord.gg/Forge-Change"
 
 [admin]
 see_own_notes = false
@@ -135,3 +133,6 @@ entity = "TippyClippy"
 
 [console]
 login_host_user = "Kill_Me_I_Noobs"
+
+[voice]
+barks_enabled = true

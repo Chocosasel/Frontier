@@ -7,3 +7,302 @@
   cost: 3000
   category: cargoproduct-category-name-medical
   group: market
+
+- type: cargoProduct
+  id: CargoBarrel
+  name: Пустая бочка
+  icon:
+    sprite: _NF/Objects/Storage/Barrels/white.rsi
+    state: icon
+  product: MetalBarrelWhite
+  cost: 2000
+  category: cargoproduct-category-name-medical
+  group: market
+
+- type: cargoProduct
+  id: CargoBarrelCarbon
+  name: Бочка хим. элементов (углерод)
+  abstract: true
+  icon:
+    sprite: _NF/Objects/Storage/Barrels/black.rsi
+    state: icon
+  product: ChemicalBarrelCarbon
+  cost: 5000
+  category: cargoproduct-category-name-medical
+  group: market
+
+- type: cargoProduct
+  id: CargoBarrelIodine
+  name: Бочка хим. элементов (йод)
+  abstract: true
+  icon:
+    sprite: _NF/Objects/Storage/Barrels/red.rsi
+    state: icon
+  product: ChemicalBarrelIodine
+  cost: 5000
+  category: cargoproduct-category-name-medical
+  group: market
+
+- type: cargoProduct
+  id: CargoBarrelFluorine
+  name: Бочка хим. элементов (фтор)
+#  abstract: true
+  icon:
+    sprite: _NF/Objects/Storage/Barrels/blue.rsi
+    state: icon
+  product: ChemicalBarrelFluorine
+  cost: 5000
+  category: cargoproduct-category-name-medical
+  group: market
+
+- type: cargoProduct
+  id: CargoBarrelChlorine
+  name: Бочка хим. элементов (хлор)
+  abstract: true
+  icon:
+    sprite: _NF/Objects/Storage/Barrels/green.rsi
+    state: icon
+  product: ChemicalBarrelChlorine
+  cost: 5000
+  category: cargoproduct-category-name-medical
+  group: market
+
+- type: cargoProduct
+  id: CargoBarrelAluminium
+  name: Бочка хим. элементов (алюминий)
+#  abstract: true
+  icon:
+    sprite: _NF/Objects/Storage/Barrels/white.rsi
+    state: icon
+  product: ChemicalBarrelAluminium
+  cost: 5000
+  category: cargoproduct-category-name-medical
+  group: market
+
+- type: cargoProduct
+  id: CargoBarrelPhosphorus
+  name: Бочка хим. элементов (фосфор)
+#  abstract: true
+  icon:
+    sprite: _NF/Objects/Storage/Barrels/red.rsi
+    state: icon
+  product: ChemicalBarrelPhosphorus
+  cost: 5000
+  category: cargoproduct-category-name-medical
+  group: market
+
+- type: cargoProduct
+  id: CargoBarrelSulfur
+  name: Бочка хим. элементов (сера)
+  abstract: true
+  icon:
+    sprite: _NF/Objects/Storage/Barrels/yellow.rsi
+    state: icon
+  product: ChemicalBarrelSulfur
+  cost: 5000
+  category: cargoproduct-category-name-medical
+  group: market
+
+- type: cargoProduct
+  id: CargoBarrelSilicon
+  name: Бочка хим. элементов (кремний)
+  abstract: true
+  icon:
+    sprite: _NF/Objects/Storage/Barrels/black.rsi
+    state: icon
+  product: ChemicalBarrelSilicon
+  cost: 5000
+  category: cargoproduct-category-name-medical
+  group: market
+
+- type: cargoProduct
+  id: CargoBarrelHydrogen
+  name: Бочка хим. элементов (водород)
+  abstract: true
+  icon:
+    sprite: _NF/Objects/Storage/Barrels/white.rsi
+    state: icon
+  product: ChemicalBarrelHydrogen
+  cost: 5000
+  category: cargoproduct-category-name-medical
+  group: market
+
+- type: cargoProduct
+  id: CargoBarrelLithium
+  name: Бочка хим. элементов (литий)
+#  abstract: true
+  icon:
+    sprite: _NF/Objects/Storage/Barrels/grey.rsi
+    state: icon
+  product: ChemicalBarrelLithium
+  cost: 5000
+  category: cargoproduct-category-name-medical
+  group: market
+
+- type: cargoProduct
+  id: CargoBarrelSodium
+  name: Бочка хим. элементов (натрий)
+  abstract: true
+  icon:
+    sprite: _NF/Objects/Storage/Barrels/grey.rsi
+    state: icon
+  product: ChemicalBarrelSodium
+  cost: 5000
+  category: cargoproduct-category-name-medical
+  group: market
+
+- type: cargoProduct
+  id: CargoBarrelPotassium
+  name: Бочка хим. элементов (калий)
+  abstract: true
+  icon:
+    sprite: _NF/Objects/Storage/Barrels/yellow.rsi
+    state: icon
+  product: ChemicalBarrelPotassium
+  cost: 5000
+  category: cargoproduct-category-name-medical
+  group: market
+
+- type: cargoProduct
+  id: CargoBarrelRadium
+  name: Бочка хим. элементов (радий)
+#  abstract: true
+  icon:
+    sprite: _NF/Objects/Storage/Barrels/green.rsi
+    state: icon
+  product: ChemicalBarrelRadium
+  cost: 5000
+  category: cargoproduct-category-name-medical
+  group: market
+
+- type: cargoProduct
+  id: CargoBarrelIron
+  name: Бочка хим. элементов (железо)
+  abstract: true
+  icon:
+    sprite: _NF/Objects/Storage/Barrels/grey.rsi
+    state: icon
+  product: ChemicalBarrelIron
+  cost: 5000
+  category: cargoproduct-category-name-medical
+  group: market
+
+- type: cargoProduct
+  id: CargoBarrelCopper
+  name: Бочка хим. элементов (медь)
+#  abstract: true
+  icon:
+    sprite: _NF/Objects/Storage/Barrels/red.rsi
+    state: icon
+  product: ChemicalBarrelCopper
+  cost: 5000
+  category: cargoproduct-category-name-medical
+  group: market
+
+- type: cargoProduct
+  id: CargoBarrelGold
+  name: Бочка хим. элементов (золото)
+  abstract: true
+  icon:
+    sprite: _NF/Objects/Storage/Barrels/yellow.rsi
+    state: icon
+  product: ChemicalBarrelGold
+  cost: 5000
+  category: cargoproduct-category-name-medical
+  group: market
+
+- type: cargoProduct
+  id: CargoBarrelMercury
+  name: Бочка хим. элементов (ртуть)
+#  abstract: true
+  icon:
+    sprite: _NF/Objects/Storage/Barrels/grey.rsi
+    state: icon
+  product: ChemicalBarrelMercury
+  cost: 5000
+  category: cargoproduct-category-name-medical
+  group: market
+
+- type: cargoProduct
+  id: CargoBarrelSilver
+  name: Бочка хим. элементов (серебро)
+  abstract: true
+  icon:
+    sprite: _NF/Objects/Storage/Barrels/white.rsi
+    state: icon
+  product: ChemicalBarrelSilver
+  cost: 5000
+  category: cargoproduct-category-name-medical
+  group: market
+
+- type: cargoProduct
+  id: CargoBarrelEthanol
+  name: Бочка хим. элементов (этанол)
+#  abstract: true
+  icon:
+    sprite: _NF/Objects/Storage/Barrels/blue.rsi
+    state: icon
+  product: ChemicalBarrelEthanol
+  cost: 5000
+  category: cargoproduct-category-name-medical
+  group: market
+
+- type: cargoProduct
+  id: CargoBarrelSugar
+  name: Бочка хим. элементов (сахар)
+  abstract: true
+  icon:
+    sprite: _NF/Objects/Storage/Barrels/white.rsi
+    state: icon
+  product: ChemicalBarrelSugar
+  cost: 5000
+  category: cargoproduct-category-name-medical
+  group: market
+
+- type: cargoProduct
+  id: CargoBarrelNitrogen
+  name: Бочка хим. элементов (азот)
+#  abstract: true
+  icon:
+    sprite: _NF/Objects/Storage/Barrels/red.rsi
+    state: icon
+  product: ChemicalBarrelNitrogen
+  cost: 5000
+  category: cargoproduct-category-name-medical
+  group: market
+
+- type: cargoProduct
+  id: CargoBarrelOxygen
+  name: Бочка хим. элементов (кислород)
+  abstract: true
+  icon:
+    sprite: _NF/Objects/Storage/Barrels/blue.rsi
+    state: icon
+  product: ChemicalBarrelOxygen
+  cost: 5000
+  category: cargoproduct-category-name-medical
+  group: market
+
+- type: cargoProduct
+  id: CargoBarrelOil
+  name: Бочка хим. элементов (мало)
+  abstract: true
+  icon:
+    sprite: _NF/Objects/Storage/Barrels/black.rsi
+    state: icon
+  product: ChemicalBarrelOil
+  cost: 5000
+  category: cargoproduct-category-name-medical
+  group: market
+
+- type: cargoProduct
+  id: CargoBarrelDiethylamine
+  name: Бочка хим. элементов (диэтиламин)
+  abstract: true
+  icon:
+    sprite: _NF/Objects/Storage/Barrels/green.rsi
+    state: icon
+  product: ChemicalBarrelDiethylamine
+  cost: 5000
+  category: cargoproduct-category-name-medical
+  group: market

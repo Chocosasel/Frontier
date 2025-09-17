@@ -10,17 +10,26 @@
 # I want to lie, shipwrecked and comatose, drinking fresh mango juice.
 - type: pointOfInterest
   id: Bahama
-  name: "Bahama Mama's"
-  rangeMin: 1200
-  rangeMax: 2900
-  IFFColor: "#ffa600" #yellorange for faction style
+  parent: BasePOI
+  name: "Багамская Мама"
+  minimumDistance: 1200
+  maximumDistance: 2900
+  spawnGamePreset: [ NFAdventure, NFPirate ]
   spawnGroup: RestStop
   gridPath: /Maps/_NF/POI/bahama.yml
-  busStop: true
+  addComponents:
+  - type: StationTransit
+    routes:
+      MinorPointsOfInterest: 10
+  - type: SolarPoweredGrid
+    trackOnInit: true
+    doNotCull: true
+  - type: ProtectedGrid
+    noGridCollision: true #CorvaxFrontier
 
 - type: gameMap
   id: Bahama
-  mapName: "Bahama Mama's"
+  mapName: "Багамская Мама"
   mapPath: /Maps/_NF/POI/bahama.yml
   minPlayers: 0
   stations:
@@ -28,4 +37,4 @@
       stationProto: DeadDropFrontierOutpost
       components:
         - type: StationNameSetup
-          mapNameTemplate: "Bahama Mama's"
+          mapNameTemplate: "Багамская Мама"

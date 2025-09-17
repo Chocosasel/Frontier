@@ -27,7 +27,7 @@
     anchored: true
   - type: Sprite
     drawdepth: WallMountedItems
-    sprite: Structures/Power/apc.rsi
+    sprite: Forge/Structures/Power/apc.rsi # Forge-change
     layers:
     - state: base
     - state: panel
@@ -71,7 +71,7 @@
     sourceNode: input
     loadNode: output
     collectionName: apc
-    sprite: Structures/Power/apc.rsi
+    sprite: Forge/Structures/Power/apc.rsi # Forge-Change
     state: static
   - type: BatteryCharger
     voltage: Medium
@@ -86,7 +86,6 @@
         type: ApcBoundUserInterface
   - type: ActivatableUI
     inHandsOnly: false
-    singleUser: true
     key: enum.ApcUiKey.Key
   - type: Construction
     graph: APC
@@ -139,6 +138,10 @@
     priority: 1
   - type: StaticPrice
     price: 500
+  - type: GuideHelp
+    guides:
+    - VoltageNetworks
+    - Power
 
 # APC under construction
 - type: entity
@@ -155,7 +158,7 @@
     anchored: true
   - type: Sprite
     drawdepth: WallMountedItems
-    sprite: Structures/Power/apc.rsi
+    sprite: Forge/Structures/Power/apc.rsi # Forge-Change
     state: frame
   - type: Construction
     graph: APC

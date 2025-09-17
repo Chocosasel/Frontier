@@ -16,6 +16,7 @@ job-name-sheriff = Шериф
 job-name-stc = Диспетчер Аванпоста
 job-name-sr = Представитель Фронтира
 job-name-pal = Представитель Юридического Департамента
+job-name-doc = Менеджер медицинских операций
 # Role timers - Make these alphabetical or I cut you
 JobERTMailCarrier = ОБР почтальон
 JobMercenary = Наёмник
@@ -29,8 +30,25 @@ JobSTC = Диспетчер Аванпоста
 job-name-senior-engineer = Ведущий Инженер
 job-name-senior-researcher = Ведущий Учёный
 job-name-senior-physician = Старший Врач
-job-name-senior-officer = Сержант
+job-name-senior-officer = Лейтенант
 JobSeniorEngineer = Ведущий Инженер
-JobSeniorOfficer = Сержант
+JobSeniorOfficer = Лейтенант
 JobSeniorPhysician = Старший Врач
 JobSeniorResearcher = Ведущий Учёный
+job-name-contractor-interview = Кандидат на аванюриста
+job-name-mercenary-interview = Кандидат на наемника
+job-name-pilot-interview = Кандидат на пилота
+job-name-nf-pirate = Пират
+job-name-nf-pirate-captain = Пиратский капитан
+job-name-nf-pirate-first-mate = Пиратский Боцман
+job-name-plant-manager = Старший Инженер Э.Э.
+job-name-plant-technician = Инженер Э.Э.
+job-title-ert-mail-carrier = Почтальон ОБР
+
+# Role timers - Keep these alphabetical, please
+JobContractorInterview = Кандидат на аванюриста
+JobMercenaryInterview = Кандидат на наемника
+JobPilotInterview = Кандидат на пилота
+JobPlantManager = Старший инженер Э.Э.
+JobPlantTechnician = Инженер Э.Э.
+JobPublicAffairsLiaison = Представитель Юр. департамента

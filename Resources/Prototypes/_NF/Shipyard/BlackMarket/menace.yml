@@ -1,10 +1,10 @@
-# # Author Info
-# # GitHub: erhardsteinhauer
-# # Discord: erhardsteinhauer
+# Author Info
+# GitHub: erhardsteinhauer
+# Discord: erhardsteinhauer
 
-# # Maintainer Info
-# # GitHub: erhardsteinhauer
-# # Discord: erhardsteinhauer
+# Maintainer Info
+# GitHub: erhardsteinhauer
+# Discord: erhardsteinhauer
 
 # # Shuttle Notes:
 # #
@@ -37,4 +37,5 @@
             # !type:NanotrasenNameGenerator
             # prefixCreator: '14'
         # - type: StationJobs
-          # availableJobs: {}
+          # availableJobs:
+           # NFPirate: [ 0, 0 ]

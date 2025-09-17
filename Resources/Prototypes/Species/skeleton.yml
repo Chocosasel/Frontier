@@ -1,15 +1,19 @@
 - type: species
   id: Skeleton
   name: species-name-skeleton
-  roundStart: false
+  roundStart: true
   prototype: MobSkeletonPerson
   sprites: MobSkeletonSprites
   defaultSkinTone: "#fff9e2"
-  markingLimits: MobHumanMarkingLimits
-  maleFirstNames: skeletonNamesFirst
-  femaleFirstNames: skeletonNamesFirst
+  markingLimits: MobSkeletonMarkingLimits
+  maleFirstNames: NamesSkeletonFirst
+  femaleFirstNames: NamesSkeletonFirst
   dollPrototype: MobSkeletonPersonDummy
   skinColoration: TintedHues
+  jobWhitelist:
+  - NFPirate
+  - NFPirateCaptain
+  - NFPirateFirstMate
 
 - type: speciesBaseSprites
   id: MobSkeletonSprites
@@ -24,6 +28,22 @@
     RLeg: MobSkeletonRLeg
     LFoot: MobSkeletonLFoot
     RFoot: MobSkeletonRFoot
+    UndergarmentTop: MobHumanoidAnyMarking
+    UndergarmentBottom: MobHumanoidAnyMarking
+
+- type: markingPoints
+  id: MobSkeletonMarkingLimits
+  onlyWhitelisted: true
+  points:
+    Hair:
+      points: 0
+      required: false
+    UndergarmentTop:
+      points: 1
+      required: false
+    UndergarmentBottom:
+      points: 1
+      required: false
 
 - type: humanoidBaseSprite
   id: MobSkeletonHead

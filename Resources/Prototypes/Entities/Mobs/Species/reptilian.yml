@@ -11,6 +11,7 @@
     - Snout
     - HeadTop
     - HeadSide
+    undergarmentBottom: UndergarmentBottomBoxersReptilian
   - type: Hunger # Corvax-Frontier
     starvationDamage:
       types:
@@ -34,6 +35,7 @@
   - type: Speech
     speechSounds: Lizard
     speechVerb: Reptilian
+    allowedEmotes: ['Thump', 'ReptilianHiss'] # Imp: add ReptilianHiss
   - type: TypingIndicator
     proto: lizard
   - type: Vocal
@@ -41,6 +43,8 @@
       Male: MaleReptilian
       Female: FemaleReptilian
       Unsexed: MaleReptilian
+  - type: BodyEmotes
+    soundsId: ReptilianBodyEmotes
   - type: Damageable
     damageContainer: Biological
     damageModifierSet: Scale
@@ -69,14 +73,6 @@
       295: 0.6
       285: 0.4
   - type: Wagging
-  - type: Inventory
-    speciesId: reptilian
-    femaleDisplacements:
-      jumpsuit:
-        sizeMaps:
-          32:
-            sprite: Mobs/Species/Human/displacement.rsi
-            state: jumpsuit-female
   - type: Carriable # Frontier: Carrying system from nyanotrasen.
   - type: ShortWhitelist # Frontier
     scale: 0.8 # Frontier
@@ -85,6 +81,33 @@
     cosmeticOnly: false # Frontier
   - type: TallWhitelist # Frontier
     scale: 1.2 # Frontier
+  - type: Inventory
+    speciesId: reptilian
+    femaleDisplacements:
+      jumpsuit:
+        sizeMaps:
+          32:
+            sprite: Forge/Mobs/Species/displacement.rsi # Corvax-Digitigrade
+            state: jumpsuit-female
+      # Corvax-Digitigrade-Start
+      shoes:
+        sizeMaps:
+          32:
+            sprite: Forge/Mobs/Species/displacement.rsi
+            state: shoes
+    displacements:
+      jumpsuit:
+        sizeMaps:
+          32:
+            sprite: Forge/Mobs/Species/displacement.rsi
+            state: jumpsuit
+      shoes:
+        sizeMaps:
+          32:
+            sprite: Forge/Mobs/Species/displacement.rsi
+            state: shoes
+      # Corvax-Digitigrade-End
+
 
 - type: entity
   parent: BaseSpeciesDummy
@@ -98,6 +121,7 @@
     - Snout
     - HeadTop
     - HeadSide
+    undergarmentBottom: UndergarmentBottomBoxersReptilian
   - type: Inventory
     speciesId: reptilian
     femaleDisplacements:
@@ -106,5 +130,23 @@
           32:
             sprite: Mobs/Species/Human/displacement.rsi
             state: jumpsuit-female
+      # Forge-Digitigrade-Start
+      shoes:
+        sizeMaps:
+          32:
+            sprite: Forge/Mobs/Species/displacement.rsi
+            state: shoes
+    displacements:
+      jumpsuit:
+        sizeMaps:
+          32:
+            sprite: Forge/Mobs/Species/displacement.rsi
+            state: jumpsuit
+      shoes:
+        sizeMaps:
+          32:
+            sprite: Forge/Mobs/Species/displacement.rsi
+            state: shoes
+    # Forge-Digitigrade-End
 
 #Weh

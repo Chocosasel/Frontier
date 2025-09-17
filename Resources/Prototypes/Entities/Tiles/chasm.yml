@@ -27,6 +27,8 @@
     state: full
   - type: IconSmooth
     key: chasm
+    additionalKeys:
+    - walls
     base: chasm
   - type: Physics
     bodyType: Static
@@ -55,7 +57,7 @@
     sprite: Tiles/Planet/Chasms/chromite_chasm.rsi
   - type: Icon
     sprite: Tiles/Planet/Chasms/chromite_chasm.rsi
-    
+
 - type: entity
   parent: FloorChasmEntity
   id: FloorDesertChasm
@@ -65,7 +67,7 @@
     sprite: Tiles/Planet/Chasms/desert_chasm.rsi
   - type: Icon
     sprite: Tiles/Planet/Chasms/desert_chasm.rsi
-    
+
 - type: entity
   parent: FloorChasmEntity
   id: FloorSnowChasm

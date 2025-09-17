@@ -4,7 +4,6 @@ using Content.Server.Administration.Logs;
 using Content.Server.Audio;
 using Content.Server.Cargo.Systems;
 using Content.Server.Chemistry.Containers.EntitySystems;
-using Content.Server.Chemistry.EntitySystems;
 using Content.Server.Construction;
 using Content.Server.DoAfter;
 using Content.Server.Fluids.EntitySystems;
@@ -13,12 +12,9 @@ using Content.Server.Nutrition;
 using Content.Server.Nutrition.Components;
 using Content.Server.Nyanotrasen.Kitchen.Components;
 using Content.Server.Popups;
-using Content.Server.Power.Components;
 using Content.Server.Power.EntitySystems;
-using Content.Server.Storage.EntitySystems;
 using Content.Server.Temperature.Components;
 using Content.Server.Temperature.Systems;
-using Content.Server.UserInterface;
 using Content.Shared.Chemistry.Components;
 using Content.Shared.Chemistry.Components.SolutionManager;
 using Content.Shared.Chemistry.EntitySystems;
@@ -40,7 +36,6 @@ using Content.Shared.Item;
 using Content.Shared.Mobs.Components;
 using Content.Shared.Mobs.Systems;
 using Content.Shared.Movement.Events;
-using Content.Shared.Nutrition;
 using Content.Shared.Nyanotrasen.Kitchen;
 using Content.Shared.Nyanotrasen.Kitchen.Components;
 using Content.Shared.Nyanotrasen.Kitchen.Prototypes;
@@ -50,7 +45,6 @@ using Content.Shared.Power;
 using Content.Shared.Throwing;
 using Content.Shared.UserInterface;
 using Content.Shared.Whitelist;
-using FastAccessors;
 using Robust.Server.GameObjects;
 using Robust.Shared.Audio;
 using Robust.Shared.Audio.Systems;
@@ -59,6 +53,10 @@ using Robust.Shared.Player;
 using Robust.Shared.Prototypes;
 using Robust.Shared.Random;
 using Robust.Shared.Timing;
+using Content.Shared._NF.Kitchen.Components; // Frontier
+using Content.Server._NF.Kitchen.Components; // Frontier
+using Content.Shared.Cargo; // Frontier
+using Content.Shared.NameModifier.EntitySystems; // Frontier
 
 namespace Content.Server.Nyanotrasen.Kitchen.EntitySystems;
 
@@ -77,7 +75,7 @@ public sealed partial class DeepFryerSystem : SharedDeepfryerSystem
     [Dependency] private readonly SharedContainerSystem _containerSystem = default!;
     [Dependency] private readonly SharedHandsSystem _handsSystem = default!;
     [Dependency] private readonly MobStateSystem _mobStateSystem = default!;
-    [Dependency] private readonly SolutionContainerSystem _solutionContainerSystem = default!;
+    [Dependency] private readonly SharedSolutionContainerSystem _solutionContainerSystem = default!;
     [Dependency] private readonly SolutionTransferSystem _solutionTransferSystem = default!;
     [Dependency] private readonly PuddleSystem _puddleSystem = default!;
     [Dependency] private readonly TemperatureSystem _temperature = default!;
@@ -85,6 +83,7 @@ public sealed partial class DeepFryerSystem : SharedDeepfryerSystem
     [Dependency] private readonly AmbientSoundSystem _ambientSoundSystem = default!;
     [Dependency] private readonly MetaDataSystem _metaDataSystem = default!;
     [Dependency] private readonly EntityWhitelistSystem _whitelistSystem = default!;
+    [Dependency] private readonly NameModifierSystem _nameModifier = default!; // Frontier
 
     private static readonly string CookingDamageType = "Heat";
     private static readonly float CookingDamageAmount = 10.0f;
@@ -221,7 +220,7 @@ public sealed partial class DeepFryerSystem : SharedDeepfryerSystem
         {
             foreach (var (_, solution) in solutions.Solutions)
             {
-                if(_solutionContainerSystem.TryGetSolution(item, solution.Name, out var solutionRef))
+                if (_solutionContainerSystem.TryGetSolution(item, solution.Name, out var solutionRef))
                     _solutionContainerSystem.SetTemperature(solutionRef!.Value, component.PoweredTemperature);
             }
         }
@@ -292,6 +291,37 @@ public sealed partial class DeepFryerSystem : SharedDeepfryerSystem
         if (MetaData(item).EntityPrototype?.ID == component.CharredPrototype)
             return;
 
+        // Frontier: deep fryer-specific "recipes"
+        if (TryComp<DeepFrySpawnComponent>(item, out var deepFriable))
+        {
+            deepFriable.Cycles--;
+            if (deepFriable.Cycles <= 0)
+            {
+                // Get oil volume to spawn before deleting item.
+                var friableVolume = GetOilAndWasteVolumeForItem(uid, component, item);
+
+                var spawn = Spawn(deepFriable.Output, Transform(uid).Coordinates);
+                EnsureComp<PreventCrispingComponent>(spawn);
+                _containerSystem.Insert(spawn, component.Storage);
+                Del(item);
+
+                // Reduce volume, replace waste
+                component.Solution.RemoveSolution(friableVolume);
+                component.WasteToAdd += friableVolume;
+            }
+            return;
+        }
+        else if (TryComp<PreventCrispingComponent>(item, out var blacklist))
+        {
+            blacklist.Cycles += 1;
+            if (blacklist.Cycles >= GetMaximumCrispiness(component.CrispinessLevelSet))
+            {
+                BurnItem(uid, component, item);
+            }
+            return;
+        }
+        // End Frontier
+
         // This item has already been deep-fried, and now it's progressing
         // into another stage.
         if (TryComp<DeepFriedComponent>(item, out var deepFriedComponent))
@@ -352,10 +382,24 @@ public sealed partial class DeepFryerSystem : SharedDeepfryerSystem
 
         MakeCrispy(item, component.CrispinessLevelSet);
 
+        var solutionQuantity = GetOilAndWasteVolumeForItem(uid, component, item);
+
+        if (_whitelistSystem.IsWhitelistPass(component.Whitelist, item) ||
+            beingEvent.TurnIntoFood)
+            MakeEdible(uid, component, item, solutionQuantity);
+        else
+            component.Solution.RemoveSolution(solutionQuantity);
+
+        component.WasteToAdd += solutionQuantity;
+    }
+
+    // Frontier: oil/waste volume to a function.
+    private FixedPoint2 GetOilAndWasteVolumeForItem(EntityUid uid, DeepFryerComponent component, EntityUid item)
+    {
         var itemComponent = Comp<ItemComponent>(item);
 
         // Determine how much solution to spend on this item.
-        var solutionQuantity = FixedPoint2.Min(
+        return FixedPoint2.Min(
             component.Solution.Volume,
             itemComponent.Size.Id switch
             {
@@ -367,15 +411,20 @@ public sealed partial class DeepFryerSystem : SharedDeepfryerSystem
                 "Ginormous" => 50,
                 _ => 10
             } * component.SolutionSizeCoefficient);
-
-        if (_whitelistSystem.IsWhitelistPass(component.Whitelist, item) ||
-            beingEvent.TurnIntoFood)
-            MakeEdible(uid, component, item, solutionQuantity);
-        else
-            component.Solution.RemoveSolution(solutionQuantity);
-
-        component.WasteToAdd += solutionQuantity;
     }
+    // End Frontier
+
+    // Frontier: maximum crispiness
+    private int GetMaximumCrispiness(ProtoId<CrispinessLevelSetPrototype> crispinessLevelSet)
+    {
+        var maxCrispiness = MaximumCrispiness; // Default maximum crispiness (should burn if something goes wrong)
+        if (_prototypeManager.TryIndex<CrispinessLevelSetPrototype>(crispinessLevelSet, out var crispinessLevels))
+        {
+            maxCrispiness = int.Max(0, crispinessLevels.Levels.Count - 1);
+        }
+        return maxCrispiness;
+    }
+    // End Frontier
 
     private void OnInitDeepFryer(EntityUid uid, DeepFryerComponent component, ComponentInit args)
     {
@@ -386,8 +435,8 @@ public sealed partial class DeepFryerSystem : SharedDeepfryerSystem
             _sawmill.Warning(
                 $"{ToPrettyString(uid)} did not have a {component.StorageName} container. It has been created.");
 
-        component.Solution =
-            _solutionContainerSystem.EnsureSolution(uid, component.SolutionName, out var solutionExisted);
+        if (_solutionContainerSystem.EnsureSolution(uid, component.SolutionName, out var solutionExisted, out var solution))
+            component.Solution = solution;
 
         if (!solutionExisted)
             _sawmill.Warning(
@@ -455,7 +504,7 @@ public sealed partial class DeepFryerSystem : SharedDeepfryerSystem
         var ratingStorage = args.PartRatings[component.MachinePartStorageMax];
 
         component.StorageMaxEntities = component.BaseStorageMaxEntities +
-                                       (int) (component.StoragePerPartRating * (ratingStorage - 1));
+                                       (int)(component.StoragePerPartRating * (ratingStorage - 1));
     }
 
     /// <summary>
@@ -555,7 +604,7 @@ public sealed partial class DeepFryerSystem : SharedDeepfryerSystem
 
             _audioSystem.PlayPvs(component.SoundRemoveItem, uid, AudioParamsInsertRemove);
 
-            UpdateUserInterface(component.Owner, component);
+            UpdateUserInterface(uid, component);
         }
     }
 
@@ -601,12 +650,11 @@ public sealed partial class DeepFryerSystem : SharedDeepfryerSystem
     {
         var user = args.Actor;
 
-        if (user == null ||
-            !TryGetActiveHandSolutionContainer(uid, user, out var heldItem, out var heldSolution,
+        if (!TryGetActiveHandSolutionContainer(uid, user, out var heldItem, out var heldSolution,
                 out var transferAmount))
             return;
 
-        if (!_solutionContainerSystem.TryGetSolution(component.Owner, component.Solution.Name, out var solution))
+        if (!_solutionContainerSystem.TryGetSolution(uid, component.Solution.Name, out var solution))
             return;
 
         _solutionTransferSystem.Transfer(user,
@@ -638,7 +686,7 @@ public sealed partial class DeepFryerSystem : SharedDeepfryerSystem
             return;
         }
 
-        var delay = TimeSpan.FromSeconds(Math.Clamp((float) wasteVolume * 0.1f, 1f, 5f));
+        var delay = TimeSpan.FromSeconds(Math.Clamp((float)wasteVolume * 0.1f, 1f, 5f));
 
         var ev = new ClearSlagDoAfterEvent(heldSolution.Value.Comp.Solution, transferAmount);
 
@@ -654,7 +702,6 @@ public sealed partial class DeepFryerSystem : SharedDeepfryerSystem
         _doAfterSystem.TryStartDoAfter(doAfterArgs);
     }
 
-    [Obsolete("Obsolete")]
     private void OnRemoveAllItems(EntityUid uid, DeepFryerComponent component, DeepFryerRemoveAllItemsMessage args)
     {
         if (component.Storage.ContainedEntities.Count == 0)
@@ -669,7 +716,7 @@ public sealed partial class DeepFryerSystem : SharedDeepfryerSystem
 
         _audioSystem.PlayPvs(component.SoundRemoveItem, uid, AudioParamsInsertRemove);
 
-        UpdateUserInterface(component.Owner, component);
+        UpdateUserInterface(uid, component);
     }
 
     private void OnClearSlag(EntityUid uid, DeepFryerComponent component, ClearSlagDoAfterEvent args)
@@ -699,8 +746,7 @@ public sealed partial class DeepFryerSystem : SharedDeepfryerSystem
 
     private void OnInitDeepFried(EntityUid uid, DeepFriedComponent component, ComponentInit args)
     {
-        var meta = MetaData(uid);
-        component.OriginalName = meta.EntityName;
+        component.OriginalName = _nameModifier.GetBaseName(uid); // Frontier: prevent reapplying name modifiers
         UpdateDeepFriedName(uid, component);
     }
 

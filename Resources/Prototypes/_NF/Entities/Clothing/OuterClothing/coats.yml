@@ -11,12 +11,14 @@
   - type: Armor # ClothingOuterArmorBulletproof stats
     modifiers:
       coefficients:
-        Blunt: 0.9
-        Slash: 0.9
-        Piercing: 0.4
-        Heat: 0.9
+        Blunt: 0.85
+        Slash: 0.85
+        Piercing: 0.55 #CorvaxFrontier
+        Heat: 0.85
   - type: ExplosionResistance
     damageCoefficient: 0.80
+  - type: StaticPrice #CorvaxFrontier
+    price: 485
 
 - type: entity
   parent: ClothingOuterStorageBase
@@ -58,7 +60,7 @@
 - type: entity
   parent: [ ClothingOuterStorageBase, BaseC2ContrabandUnredeemable ]
   id: ClothingOuterCoatNfsdBomber
-  name: nfsd bomber
+  name: NFSD bomber
   description: Lookin' slick Tom.
   components:
   - type: Sprite
@@ -69,7 +71,7 @@
 - type: entity
   parent: [ ClothingOuterStorageBase, BaseC2ContrabandUnredeemable ]
   id: ClothingOuterCoatNfsdBomberBrigmed
-  name: nfsd brigmedic bomber
+  name: NFSD brigmedic bomber
   description: Blood may stain.
   components:
   - type: Sprite
@@ -80,7 +82,7 @@
 - type: entity
   parent: [ ClothingOuterStorageBase, BaseC2ContrabandUnredeemable ]
   id: ClothingOuterCoatNfsdFormal
-  name: nfsd formal coat
+  name: NFSD formal coat
   description: Snazzy.
   components:
   - type: Sprite
@@ -91,7 +93,7 @@
 - type: entity
   parent: [ ClothingOuterStorageBase, BaseC2ContrabandUnredeemable ]
   id: ClothingOuterCoatNfsdFormalSheriff
-  name: nfsd sheriff's formal coat
+  name: NFSD sheriff's formal coat
   description: Very snazzy.
   components:
   - type: Sprite
@@ -102,7 +104,7 @@
 - type: entity
   parent: [ ClothingOuterStorageBase, BaseC2ContrabandUnredeemable ]
   id: ClothingOuterCoatNfsdLongCoat
-  name: nfsd long coat
+  name: NFSD long coat
   description: Big iron on his hip...
   components:
   - type: Sprite
@@ -138,7 +140,7 @@
     sprite: _NF/Clothing/OuterClothing/Misc/pirate_captain.rsi
 
 - type: entity
-  parent: [ ClothingOuterStorageFoldableBase, BaseC3ContrabandNoValue, ContrabandClothing ]
+  parent: [ ClothingOuterStorageFoldableBase, BaseC1Contraband ]
   id: ClothingOuterCoatArcadiaTrench
   name: arcadia flak trenchcoat
   description: A flak trenchcoat produced by Arcadia Industries, enhanced with a bulletproof alloy for some extra protection.
@@ -150,13 +152,12 @@
   - type: Armor # ClothingOuterArmorBulletproof stats + caustic
     modifiers:
       coefficients:
-        Blunt: 0.9
-        Slash: 0.9
-        Piercing: 0.4
-        Heat: 0.9
-        Caustic: 0.75
+        Blunt: 0.85
+        Slash: 0.85
+        Piercing: 0.55
+        Heat: 0.85
   - type: ExplosionResistance
-    damageCoefficient: 0.50 # buffed 0.80<0.50
+    damageCoefficient: 0.80
 
 - type: entity
   parent: [ClothingOuterStorageFoldableBaseOpened, ClothingOuterCoatArcadiaTrench]
@@ -166,10 +167,29 @@
   - type: Armor # Open = less armor
     modifiers:
       coefficients:
-        Blunt: 0.9
-        Slash: 0.9
-        Piercing: 0.5
-        Heat: 0.9
-        Caustic: 0.8
+        Blunt: 0.85
+        Slash: 0.85
+        Piercing: 0.55
+        Heat: 0.85
   - type: ExplosionResistance
-    damageCoefficient: 0.60
+    damageCoefficient: 0.80
+
+- type: entity
+  parent: [ ClothingOuterStorageBase, BaseC3WizardContraband ]
+  id: ClothingOuterWizardBrick
+  name: brick wizard coat
+  description: ClothingOuterWizardBrick
+  components:
+  - type: Sprite
+    sprite: _NF/Clothing/OuterClothing/Misc/wizard/brickwizard.rsi
+  - type: Clothing
+    sprite: _NF/Clothing/OuterClothing/Misc/wizard/brickwizard.rsi
+  - type: Armor # Open = less armor
+    modifiers:
+      coefficients:
+        Blunt: 0.9
+        Slash: 0.8
+        Piercing: 0.8
+        Heat: 0.9
+  - type: ExplosionResistance
+    damageCoefficient: 0.80

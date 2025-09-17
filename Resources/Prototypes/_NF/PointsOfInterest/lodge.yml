@@ -10,18 +10,27 @@
 # Provides higher end expeditionary ships and a space for vets to spawn in away from potential frontier shenanigans
 - type: pointOfInterest
   id: Lodge
-  name: 'Экспедиционная База'
-  rangeMin: 1650
-  rangeMax: 3400
-  IFFColor: "#3737C8" #blue the color of NT
+  parent: BasePOI
+  name: 'Аванпост наёмников Рубеж' #CorvaxFrontier
+  minimumDistance: 1650
+  maximumDistance: 3400
   spawnGroup: Required
-  gridPath: /Maps/_NF/POI/lodge.yml
-  busStop: true
+  gridPath: /Maps/Forge/POI/lodge.yml #CorvaxFrontier
+  addComponents:
+  - type: IFF
+    color: "#3737F8"
+  - type: StationTransit
+    routes:
+      SpawnPoints: 20
+  - type: ProtectedGrid
+    preventEmpEvents: true #CorvaxFrontier
+    preventRCDUse: true #CorvaxFrontier
+    noGridCollision: true #CorvaxFrontier
 
 - type: gameMap
   id: Lodge
-  mapName: 'Экспедиционная База'
-  mapPath: /Maps/_NF/POI/lodge.yml
+  mapName: 'Аванпост наёмников Рубеж' #CorvaxFrontier
+  mapPath: /Maps/Forge/POI/lodge.yml #CorvaxFrontier
   minPlayers: 0
   stations:
     Lodge:

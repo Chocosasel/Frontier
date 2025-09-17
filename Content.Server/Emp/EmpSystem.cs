@@ -1,4 +1,4 @@
-using Content.Server.Corvax.Elzuosa; //Corvax-Frontier
+using Content.Server._Forge.Elzuosa; //Corvax-Frontier
 using Content.Server.Entry;
 using Content.Server.Explosion.EntitySystems;
 using Content.Server.Power.Components;
@@ -6,6 +6,7 @@ using Content.Server.Power.EntitySystems;
 using Content.Server.Radio;
 using Content.Server.Station.Components;
 using Content.Server.SurveillanceCamera;
+using Content.Shared._Forge.Emp;
 using Content.Shared.Emp;
 using Content.Shared.Examine;
 using Content.Shared.Tiles; // Frontier
@@ -15,6 +16,9 @@ using Content.Shared._NF.Emp.Components; // Frontier
 using Robust.Server.GameStates; // Frontier: EMP Blast PVS
 using Robust.Shared.Configuration; // Frontier: EMP Blast PVS
 using Robust.Shared; // Frontier: EMP Blast PVS
+using Content.Shared.Verbs; // Frontier: examine verb
+using Robust.Shared.Utility; // Frontier: examine verb
+using Content.Server.Examine; // Frontier: examine verb
 
 namespace Content.Server.Emp;
 
@@ -24,6 +28,7 @@ public sealed class EmpSystem : SharedEmpSystem
     [Dependency] private readonly TransformSystem _transform = default!;
     [Dependency] private readonly PvsOverrideSystem _pvs = default!; // Frontier: EMP Blast PVS
     [Dependency] private readonly IConfigurationManager _cfg = default!; // Frontier: EMP Blast PVS
+    [Dependency] private readonly ExamineSystem _examine = default!; // Frontier: examine verb
 
     public const string EmpPulseEffectPrototype = "EffectEmpBlast"; // Frontier: EffectEmpPulse
 
@@ -32,6 +37,8 @@ public sealed class EmpSystem : SharedEmpSystem
         base.Initialize();
         SubscribeLocalEvent<EmpDisabledComponent, ExaminedEvent>(OnExamine);
         SubscribeLocalEvent<EmpOnTriggerComponent, TriggerEvent>(HandleEmpTrigger);
+        SubscribeLocalEvent<EmpOnTriggerComponent, GetVerbsEvent<ExamineVerb>>(OnEmpTriggerExamine); // Frontier
+        SubscribeLocalEvent<EmpDescriptionComponent, GetVerbsEvent<ExamineVerb>>(OnEmpDescriptorExamine); // Frontier
 
         SubscribeLocalEvent<EmpDisabledComponent, RadioSendAttemptEvent>(OnRadioSendAttempt);
         SubscribeLocalEvent<EmpDisabledComponent, RadioReceiveAttemptEvent>(OnRadioReceiveAttempt);
@@ -46,11 +53,14 @@ public sealed class EmpSystem : SharedEmpSystem
     /// <param name="range">The range of the EMP pulse.</param>
     /// <param name="energyConsumption">The amount of energy consumed by the EMP pulse.</param>
     /// <param name="duration">The duration of the EMP effects.</param>
-    /// <param name="immuneGrids">Frontier: a list of the grids that should not be affected by the
+    /// <param name="immuneGrids">Frontier: a list of the grids that should not be affected by the pulse.</param>
     public void EmpPulse(MapCoordinates coordinates, float range, float energyConsumption, float duration, List<EntityUid>? immuneGrids = null)
     {
         foreach (var uid in _lookup.GetEntitiesInRange(coordinates, range))
         {
+            if (HasComp<EmpProtectionComponent>(uid))
+                continue;
+
             // Frontier: Block EMP on grid
             var gridUid = Transform(uid).GridUid;
             if (gridUid != null &&
@@ -73,6 +83,22 @@ public sealed class EmpSystem : SharedEmpSystem
     }
 
     /// <summary>
+    ///   Triggers an EMP pulse at the given location, by first raising an <see cref="EmpAttemptEvent"/>, then a raising <see cref="EmpPulseEvent"/> on all entities in range.
+    /// </summary>
+    /// <param name="coordinates">The location to trigger the EMP pulse at.</param>
+    /// <param name="range">The range of the EMP pulse.</param>
+    /// <param name="energyConsumption">The amount of energy consumed by the EMP pulse.</param>
+    /// <param name="duration">The duration of the EMP effects.</param>
+    public void EmpPulse(EntityCoordinates coordinates, float range, float energyConsumption, float duration)
+    {
+        foreach (var uid in _lookup.GetEntitiesInRange(coordinates, range))
+        {
+            TryEmpEffects(uid, energyConsumption, duration);
+        }
+        Spawn(EmpPulseEffectPrototype, coordinates);
+    }
+
+    /// <summary>
     ///    Attempts to apply the effects of an EMP pulse onto an entity by first raising an <see cref="EmpAttemptEvent"/>, followed by raising a <see cref="EmpPulseEvent"/> on it.
     /// </summary>
     /// <param name="uid">The entity to apply the EMP effects on.</param>
@@ -80,6 +106,9 @@ public sealed class EmpSystem : SharedEmpSystem
     /// <param name="duration">The duration of the EMP effects.</param>
     public void TryEmpEffects(EntityUid uid, float energyConsumption, float duration)
     {
+        if (HasComp<EmpProtectionComponent>(uid))
+            return;
+
         var attemptEv = new EmpAttemptEvent();
         RaiseLocalEvent(uid, attemptEv);
         if (attemptEv.Cancelled)
@@ -148,6 +177,47 @@ public sealed class EmpSystem : SharedEmpSystem
     {
         args.PushMarkup(Loc.GetString("emp-disabled-comp-on-examine"));
     }
+
+    // Frontier: examine EMP trigger objects
+    private void OnEmpTriggerExamine(EntityUid uid, EmpOnTriggerComponent component, GetVerbsEvent<ExamineVerb> args)
+    {
+        if (!args.CanInteract || !args.CanAccess)
+            return;
+
+        var msg = GetEmpDescription(component.Range, component.EnergyConsumption, component.DisableDuration);
+
+        _examine.AddDetailedExamineVerb(args, component, msg,
+            Loc.GetString("emp-examinable-verb-text"), "/Textures/Interface/VerbIcons/smite.svg.192dpi.png",
+            Loc.GetString("emp-examinable-verb-message"));
+    }
+    private void OnEmpDescriptorExamine(EntityUid uid, EmpDescriptionComponent component, GetVerbsEvent<ExamineVerb> args)
+    {
+        if (!args.CanInteract || !args.CanAccess)
+            return;
+
+        var msg = GetEmpDescription(component.Range, component.EnergyConsumption, component.DisableDuration);
+
+        _examine.AddDetailedExamineVerb(args, component, msg,
+            Loc.GetString("emp-examinable-verb-text"), "/Textures/Interface/VerbIcons/smite.svg.192dpi.png",
+            Loc.GetString("emp-examinable-verb-message"));
+    }
+
+    private FormattedMessage GetEmpDescription(float range, float energy, float time)
+    {
+        var msg = new FormattedMessage();
+        msg.AddMarkupOrThrow(Loc.GetString("emp-examine"));
+        msg.PushNewline();
+        msg.AddMarkupOrThrow(Loc.GetString("emp-range-value",
+            ("value", range)));
+        msg.PushNewline();
+        msg.AddMarkupOrThrow(Loc.GetString("emp-energy-value",
+            ("value", energy)));
+        msg.PushNewline();
+        msg.AddMarkupOrThrow(Loc.GetString("emp-time-value",
+            ("value", time)));
+        return msg;
+    }
+    // End Frontier
 
     private void HandleEmpTrigger(EntityUid uid, EmpOnTriggerComponent comp, TriggerEvent args)
     {

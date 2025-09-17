@@ -1,3 +1,4 @@
+using Content.Client._Forge.Sponsors; // Forge-Change
 using Content.Client.Administration.Managers;
 using Content.Client.Changelog;
 using Content.Client.Chat.Managers;
@@ -5,6 +6,7 @@ using Content.Client.Clickable;
 using Content.Client.DebugMon;
 using Content.Client.Eui;
 using Content.Client.Fullscreen;
+using Content.Client.GameTicking.Managers;
 using Content.Client.GhostKick;
 using Content.Client.Guidebook;
 using Content.Client.Launcher;
@@ -18,8 +20,13 @@ using Content.Client.Viewport;
 using Content.Client.Voting;
 using Content.Shared.Administration.Logs;
 using Content.Client.Lobby;
+using Content.Client.Players.RateLimiting;
+using Content.Shared._Forge.Sponsors; // Forge-Change
 using Content.Shared.Administration.Managers;
+using Content.Shared.Chat;
 using Content.Shared.Players.PlayTimeTracking;
+using Content.Shared.Players.RateLimiting;
+using Content.Client._Forge.DiscordAuth; // Forge-Change
 
 namespace Content.Client.IoC
 {
@@ -30,7 +37,9 @@ namespace Content.Client.IoC
             var collection = IoCManager.Instance!;
 
             collection.Register<IParallaxManager, ParallaxManager>();
+            collection.Register<GeneratedParallaxCache>();
             collection.Register<IChatManager, ChatManager>();
+            collection.Register<ISharedChatManager, ChatManager>();
             collection.Register<IClientPreferencesManager, ClientPreferencesManager>();
             collection.Register<IStylesheetManager, StylesheetManager>();
             collection.Register<IScreenshotHook, ScreenshotHook>();
@@ -47,10 +56,16 @@ namespace Content.Client.IoC
             collection.Register<ExtendedDisconnectInformationManager>();
             collection.Register<JobRequirementsManager>();
             collection.Register<DocumentParsingManager>();
-            collection.Register<ContentReplayPlaybackManager, ContentReplayPlaybackManager>();
+            collection.Register<ContentReplayPlaybackManager>();
             collection.Register<ISharedPlaytimeManager, JobRequirementsManager>();
             collection.Register<MappingManager>();
             collection.Register<DebugMonitorManager>();
+            collection.Register<PlayerRateLimitManager>();
+            collection.Register<SharedPlayerRateLimitManager, PlayerRateLimitManager>();
+            collection.Register<TitleWindowManager>();
+            collection.Register<DiscordAuthManager>(); // Forge-Change
+            collection.Register<SponsorManager>(); // Forge-Change
+            collection.Register<ISharedSponsorManager, SponsorManager>(); // Forge-Change
         }
     }
 }

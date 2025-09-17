@@ -44,7 +44,7 @@ salvage-expedition-difficulty-Extreme = Экстремальная
 salvage-expedition-not-all-present = Не все утилизаторы вернулись на борт шаттла!
 # Runner
 salvage-expedition-announcement-countdown-minutes =
-    До окончания экспедиции осталась { $duration } { $duration ->
+    До окончания экспедиции осталось { $duration } { $duration ->
         [one] минута
         [few] минуты
        *[other] минут
@@ -58,21 +58,29 @@ salvage-expedition-announcement-countdown-seconds =
 salvage-expedition-reward-description = Награда за завершение миссии
 salvage-expedition-announcement-dungeon = Подземелье расположено от вас на { $direction }.
 salvage-expedition-completed = Экспедиция окончена.
-
 salvage-light-mod-daylight = Дневной
 salvage-light-mod-evening = Вечерний
 salvage-light-mod-night = Ночной
-
-salvage-temperature-mod-room-temperature = Комнатная температура
+salvage-temperature-mod-room-temperature = Стандартная температура
 salvage-temperature-mod-hot = Жарко
 salvage-temperature-mod-high-temperature = Высокая температура
 salvage-temperature-mod-extreme-heat = Экстремально жарко
 salvage-temperature-mod-cold = Холодно
 salvage-temperature-mod-low-temperature = Низкая температура
 salvage-temperature-mod-extreme-cold = Экстремально холодно
-
 salvage-air-mod-no-atmosphere = Без атмосферы
 salvage-air-mod-breathable-atmosphere = Пригодная для дыхания атмосфера
 salvage-air-mod-dangerous-atmosphere = Опасная атмосфера
 salvage-air-mod-toxic-atmosphere = Токсичная атмосфера
 salvage-air-mod-volatile-atmosphere = Нестабильная атмосфера
+
+# Биомы экспедиций
+salvage-biome-mod-caves = Пещеры
+salvage-biome-mod-grasslands = Луга
+salvage-biome-mod-snow = Снежная тайга
+salvage-biome-mod-lava = Вулкан
+salvage-dungeon-mod-lava-brig = Лавовый бриг
+salvage-dungeon-mod-snowy-labs = Снежные лаборатории
+salvage-dungeon-mod-experiment = Эксперимент
+salvage-dungeon-mod-haunted = Призрачный
+salvage-dungeon-mod-mineshaft = Шахты

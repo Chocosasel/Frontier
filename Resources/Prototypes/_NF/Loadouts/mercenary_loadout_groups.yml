@@ -12,6 +12,9 @@
   - MercenaryClothingUniformJumpsuitMilitaryTurtleneckBlueMercenary
   - MercenaryClothingUniformJumpsuitMilitaryTurtleneckBlueMercenaryMedic
   - MercenaryClothingUniformJumpsuitMilitaryTurtleneckBlueMercenaryCaptain
+  - MercenaryClothingUniformJumpskirtArcadia #Forge-Change
+  - MercenaryClothingUniformJumpsuitArcadia #Forge-Change
+  - MercenaryClothingUniformJumpsuitMilitaryArcadiaTac #Forge-Change
   subgroups:
   - PilotJumpsuit
   - ContractorJumpsuit
@@ -27,6 +30,12 @@
   - MercenaryClothingBackpackDuffelMercenary
   - MercenaryClothingBackpackSatchelMercenary
   - MercenaryClothingBackpackMessengerMercenary
+  - MercenaryClothingBackpackDuffelPrivateSecurity
+  - MercenaryClothingBackpackMessengerPrivateSecurity
+  - MercenaryClothingBackpackArcadia #Corvax Frontier
+  - MercenaryClothingBackpackDuffelArcadia #Forge-Change
+  - MercenaryClothingBackpackSatchelArcadia #Forge-Change
+  - MercenaryClothingBackpackMessengerArcadia #Forge-Change
   - SecurityBackpack
   - SecuritySatchel
   - SecurityDuffel
@@ -47,11 +56,13 @@
   - MercenaryClothingOuterArmorPunkOrange # Punkish (Static visuals)
   - MercenaryClothingOuterArmorPunkRed # Punkish (Static visuals)
   - MercenaryClothingOuterArmorPunkRandomized # Punkish (Randomized visuals)
+  - MercenaryClothingOuterArmorCaptainCarapace
+  - MercenaryClothingOuterEVASuitArcadia #Forge-Change
+  - MercenaryClothingOuterWinterArcadia #Forge-Change
+  - MercenaryClothingOuterCoatArcadiaTrench #Forge-Change
   subgroups:
   - PilotOuterClothing
   - ContractorOuterClothing
-  fallbacks:
-  - ContractorClothingOuterVestTank # Vox-only, default them to have this equipped
 
 - type: loadoutGroup
   id: MercenaryShoes
@@ -60,6 +71,8 @@
   - MercenaryClothingShoesBootsMercenary
   - MercenaryClothingShoesBootsJack
   - MercenaryClothingShoesBootsCombat
+  - MercenaryClothingShoesMagMercenary
+  - MercenaryClothingShoesMagSecurity
   subgroups:
   - PilotShoes
   - ContractorShoes
@@ -75,8 +88,11 @@
   - MercenaryClothingHeadHelmetMercenaryBlack
   - MercenaryClothingHeadBandMercenary
   - MercenaryClothingHeadHatBeretMercenary
-  - SecurityHelmet
-  - SecurityBeret
+  - MercenaryClothingHeadHatBeretCommander
+  - SecurityGuardSecurityHelmet
+  - SecurityGuardSecurityHat
+  - SecurityGuardSecurityBeret
+  - SecurityGuardTrooperHat
   subgroups:
   - PilotHead
   - ContractorHead
@@ -103,13 +119,14 @@
   - MercenaryClothingHandsGlovesMercFingerless
   - MercenaryClothingHandsMercenaryGlovesCombat
   - MercenaryClothingHandsGlovesCombat
+  - MercenaryClothingHandsGlovesArcadiaCombat #Forge-Change
   subgroups:
   - PilotGloves
   - ContractorGloves
 
 - type: loadoutGroup
   id: MercenaryPDA
-  name: loadout-group-contractor-id
+  name: loadout-group-contractor-pda
   loadouts:
   - MercenaryMercenaryPDA
   subgroups:
@@ -125,6 +142,7 @@
   loadouts:
   - MercenaryClothingEyesGlassesMercenary
   - MercenaryClothingEyesGlassesSunglasses
+  - MercenaryClothingEyesArcadiaVisor #Forge-Change
   subgroups:
   - PilotGlasses
   - ContractorGlasses
@@ -135,6 +153,7 @@
   loadouts:
   - MercenaryClothingMaskGasMercenary
   - MercenaryClothingMaskGasSecurity
+  - MercenaryClothingMaskArcadia #Forge-Change
   subgroups:
   - PilotFace
   - ContractorFace
@@ -150,5 +169,6 @@
   - MercenaryClothingBeltMilitaryWebbing
   - MercenaryClothingBeltMilitaryWebbingMed
   - MercenaryClothingBeltSecurity
+  - MercenaryClothingBeltArcadia #Forge-Change
   subgroups:
   - ContractorBelt

@@ -10,20 +10,27 @@
 # Byarr
 - type: pointOfInterest
   id: Cove
+  parent: BasePOI
   name: Пиратская Бухта
-  rangeMin: 10000
-  rangeMax: 15000
-  IFFColor: "#C83737" #red the color of ebil
-  IFFFlags: [HideLabel]
-  allowIFFChanges: true
-  hideWarp: true
+  minimumDistance: 10000
+  maximumDistance: 15000
+  spawnGamePreset: [ NFPirate ]
   spawnGroup: Required
-  gridPath: /Maps/_NF/POI/cove.yml
+  gridPath: /Maps/Forge/POI/cove.yml #CorvaxFrontier
+  hideWarp: true
+  addComponents:
+  - type: IFF
+    color: "#C83737"
+    flags: [HideLabel, Hide]
+    readOnly: false
+  - type: ProtectedGrid
+    noGridCollision: true #CorvaxFrontier
+  - type: BlockEvacuation #Forge-Change
 
 - type: gameMap
   id: Cove
   mapName: 'Пиратская Бухта'
-  mapPath: /Maps/Corvax/POI/cove.yml #CorvaxFrontier
+  mapPath: /Maps/Forge/POI/cove.yml #CorvaxFrontier
   minPlayers: 0
   stations:
     Cove:
@@ -35,11 +42,14 @@
           iconPath: /Textures/_NF/Interface/Pirate/piratelogo.png
           stationSubtext: 'frontier-lobby-pirate-subtext'
           stationDescription: 'frontier-lobby-pirate-description'
+          lobbySortOrder: 6
         - type: StationJobs
           availableJobs:
-            PirateCaptain: [ 1, 1 ]
-            PirateFirstMate: [ 1, 1 ]
-            Pirate: [ 0, 0 ]
+            NFPirateCaptain: [ 1, 1 ]
+            NFPirateFirstMate: [ 0, 0] #Corvax-Frontier
+            NFPirate: [ 0, 0 ]
         - type: StationDeadDropReporting
           messageSet: Pirate
         - type: StationDeadDropHintExempt
+        - type: TradeCrateWildcardDestination
+        - type: BindToStationVariationPassExemption

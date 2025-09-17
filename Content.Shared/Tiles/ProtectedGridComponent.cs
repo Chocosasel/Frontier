@@ -1,13 +1,21 @@
 using Robust.Shared.GameStates;
+using Robust.Shared.Audio; // Frontier
 
 namespace Content.Shared.Tiles;
 
 /// <summary>
 /// Prevents floor tile updates when attached to a grid.
 /// </summary>
-[RegisterComponent, NetworkedComponent]
+[RegisterComponent, NetworkedComponent, AutoGenerateComponentState]
+[Access(typeof(ProtectedGridSystem))]
 public sealed partial class ProtectedGridComponent : Component
 {
+    /// <summary>
+    /// A bitmask of all the initial tiles on this grid.
+    /// </summary>
+    [DataField, AutoNetworkedField]
+    public Dictionary<Vector2i, ulong> BaseIndices = new();
+
     // Frontier: define protection types.
     [DataField]
     public bool PreventFloorRemoval = false;
@@ -21,5 +29,21 @@ public sealed partial class ProtectedGridComponent : Component
     public bool PreventExplosions = false;
     [DataField]
     public bool PreventArtifactTriggers = false;
+    [DataField]
+    public bool KillHostileMobs = false;
+    /// </summary>
+    /// If true, this grid will not collide with other grids.
+    /// begin Corvax-Frontier
+    /// </summary>
+    [DataField]
+    public bool NoGridCollision = false;
+    /// </summary>
+    /// end Corvax-Frontier
+    /// </summary>
+    /// <summary>
+    /// The sound made when a hostile mob is killed when entering a protected grid.
+    /// </summary>
+    [DataField]
+    public SoundSpecifier HostileMobKillSound = new SoundPathSpecifier("/Audio/Effects/holy.ogg");
     // End Frontier
 }

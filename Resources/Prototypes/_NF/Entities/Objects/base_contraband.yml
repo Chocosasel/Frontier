@@ -9,8 +9,7 @@
   - type: Contraband
     severity: Class1
     # Pretty much everyone.
-    allowedDepartments: [ Civilian, Security, Command, Frontier ]
-    turnInValues: {}
+    allowedDepartments: [ Civilian, Security, Command, Frontier, CentralCommand ]
 
 - type: entity
   parent: BaseC1Contraband
@@ -34,7 +33,15 @@
     severity: Class2
     # Security and heads only (finally, shotgun traffic controller)
     allowedDepartments: [ Security, Command ]
-    turnInValues: {} # TODO: pirate values?
+
+# Engineering equipment that's potentially hazardous in use
+- type: entity
+  parent: BaseC2ContrabandUnredeemable
+  id: BaseC2ContrabandEngineeringUnredeemable
+  abstract: true
+  components:
+  - type: Contraband
+    allowedDepartments: [ Engineering ]
 
 - type: entity
   parent: BaseC2ContrabandUnredeemable
@@ -45,6 +52,7 @@
     severity: Class2Expedition
     turnInValues: &oneFUC
       FrontierUplinkCoin: 1
+      Doubloon: 1
 
 - type: entity
   parent: BaseC2ContrabandUnredeemable
@@ -54,6 +62,7 @@
   - type: Contraband
     turnInValues: &noFUCs
       FrontierUplinkCoin: 0
+      Doubloon: 0
 # endregion
 
 # region Class 3 Objects
@@ -63,8 +72,7 @@
   components:
   - type: Contraband
     severity: Class3General
-    allowedDepartments: null
-    turnInValues: {} # TODO: pirate values?
+    allowedDepartments: []
 
 - type: entity
   parent: BaseC3ContrabandUnredeemable
@@ -75,6 +83,7 @@
     severity: Class3Expedition
     turnInValues:
       FrontierUplinkCoin: 2
+      Doubloon: 2
 
 - type: entity
   parent: BaseC3ContrabandUnredeemable
@@ -99,7 +108,6 @@
   components:
   - type: Contraband
     severity: Class3Cult
-    turnInValues: {} # TODO: pirate values?
 
 - type: entity
   parent: BaseC3CultContrabandUnredeemable
@@ -132,7 +140,8 @@
   abstract: true
   components:
   - type: Contraband
-    turnInValues: *oneFUC
+    turnInValues:
+      FrontierUplinkCoin: 1
 
 - type: entity
   parent: BaseC3ContrabandUnredeemable
@@ -141,7 +150,6 @@
   components:
   - type: Contraband
     severity: Class3Syndicate
-    turnInValues: {} # TODO: pirate values?
 
 - type: entity
   parent: BaseC3SyndicateContrabandUnredeemable
@@ -166,7 +174,6 @@
   components:
   - type: Contraband
     severity: Class3Wizard
-    turnInValues: {} # TODO: pirate values?
 
 - type: entity
   parent: BaseC3ContrabandUnredeemable
@@ -223,7 +230,6 @@
   - type: Contraband
     severity: PirateTarget
     # Security and heads only
-    allowedDepartments: null
     turnInValues:
       Doubloon: 1
     hideCarryStatus: true

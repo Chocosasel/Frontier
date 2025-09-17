@@ -1,5 +1,4 @@
 using System.Numerics;
-using Content.Server.Cargo.Components;
 using Content.Server.Cargo.Systems;
 using Robust.Server.GameObjects;
 using Robust.Shared.Map;
@@ -7,22 +6,27 @@ using Content.Server.Shuttles.Components;
 using Content.Server.Shuttles.Systems;
 using Content.Server.StationEvents.Components;
 using Content.Shared.GameTicking.Components;
-using Content.Shared.Humanoid;
-using Content.Shared.Mobs.Components;
 using Robust.Shared.Random;
 using Content.Server._NF.Salvage;
+using Content.Server._NF.Bank;
+using Content.Shared._NF.Bank.BUI;
 using Content.Server.GameTicking;
 using Content.Server.Procedural;
 using Robust.Shared.Prototypes;
 using Content.Shared.Salvage;
-using Content.Server.Warps;
-using Content.Server.Station.Systems;
+using Content.Server.Maps.NameGenerators;
+using Content.Server.StationEvents.Events;
+using Content.Server._NF.Station.Systems;
+using Content.Server._NF.StationEvents.Components;
+using Robust.Shared.EntitySerialization.Systems;
 
-namespace Content.Server.StationEvents.Events;
+namespace Content.Server._NF.StationEvents.Events;
 
 public sealed class BluespaceErrorRule : StationEventSystem<BluespaceErrorRuleComponent>
 {
+    NanotrasenNameGenerator _nameGenerator = new();
     [Dependency] private readonly IMapManager _mapManager = default!;
+    [Dependency] private readonly MapSystem _map = default!;
     [Dependency] private readonly SharedMapSystem _mapSystem = default!;
     [Dependency] private readonly IPrototypeManager _protoManager = default!;
     [Dependency] private readonly IRobustRandom _random = default!;
@@ -32,10 +36,10 @@ public sealed class BluespaceErrorRule : StationEventSystem<BluespaceErrorRuleCo
     [Dependency] private readonly SharedTransformSystem _transform = default!;
     [Dependency] private readonly ShuttleSystem _shuttle = default!;
     [Dependency] private readonly PricingSystem _pricing = default!;
-    [Dependency] private readonly CargoSystem _cargo = default!;
     [Dependency] private readonly LinkedLifecycleGridSystem _linkedLifecycleGrid = default!;
-    [Dependency] private readonly StationSystem _stationSystem = default!;
     [Dependency] private readonly StationRenameWarpsSystems _renameWarps = default!;
+    [Dependency] private readonly BankSystem _bank = default!;
+    [Dependency] private readonly SharedSalvageSystem _salvage = default!;
 
     public override void Initialize()
     {
@@ -46,13 +50,13 @@ public sealed class BluespaceErrorRule : StationEventSystem<BluespaceErrorRuleCo
     {
         base.Started(uid, component, gameRule, args);
 
-        if (!_mapSystem.TryGetMap(GameTicker.DefaultMap, out var mapUid))
+        if (!_map.TryGetMap(GameTicker.DefaultMap, out var mapUid))
             return;
 
         var spawnCoords = new EntityCoordinates(mapUid.Value, Vector2.Zero);
 
         // Spawn on a dummy map and try to FTL if possible, otherwise dump it.
-        _mapSystem.CreateMap(out var mapId);
+        _map.CreateMap(out var mapId);
 
         foreach (var group in component.Groups.Values)
         {
@@ -88,20 +92,30 @@ public sealed class BluespaceErrorRule : StationEventSystem<BluespaceErrorRuleCo
                     _metadata.SetEntityName(spawned, Loc.GetString(_random.Pick(group.NameLoc)));
 
                 }
-
-                if (_protoManager.TryIndex(group.NameDataset, out var dataset))
+                else if (_protoManager.TryIndex(group.NameDataset, out var dataset))
                 {
-                    _metadata.SetEntityName(spawned, SharedSalvageSystem.GetFTLName(dataset, _random.Next()));
+                    string gridName;
+                    switch (group.NameDatasetType)
+                    {
+                        case BluespaceDatasetNameType.FTL:
+                            gridName = _salvage.GetFTLName(dataset, _random.Next());
+                            break;
+                        case BluespaceDatasetNameType.Nanotrasen:
+                            gridName = _nameGenerator.FormatName(Loc.GetString(_random.Pick(dataset.Values)) + " {1}"); // We need the prefix.
+                            break;
+                        case BluespaceDatasetNameType.Verbatim:
+                        default:
+                            gridName = Loc.GetString(_random.Pick(dataset.Values));
+                            break;
+                    }
+
+                    _metadata.SetEntityName(spawned, gridName);
                 }
 
                 if (group.NameWarp)
                 {
-                    var warps = _renameWarps.SyncWarpPointsToGrid(spawned);
-                    foreach (var warp in warps)
-                    {
-                        if (group.HideWarp)
-                            warp.Comp.AdminOnly = true;
-                    }
+                    bool? adminOnly = group.HideWarp ? true : null;
+                    _renameWarps.SyncWarpPointsToGrid(spawned, forceAdminOnly: adminOnly);
                 }
 
                 EntityManager.AddComponents(spawned, group.AddComponents);
@@ -110,7 +124,7 @@ public sealed class BluespaceErrorRule : StationEventSystem<BluespaceErrorRuleCo
             }
         }
 
-        _mapManager.DeleteMap(mapId);
+        _map.DeleteMap(mapId);
     }
 
     private bool TryDungeonSpawn(EntityCoordinates spawnCoords, BluespaceErrorRuleComponent component, ref BluespaceDungeonSpawnGroup group, int i, out EntityUid spawned)
@@ -139,7 +153,7 @@ public sealed class BluespaceErrorRule : StationEventSystem<BluespaceErrorRuleCo
         var spawnedGrid = _mapManager.CreateGridEntity(mapId);
 
         _transform.SetMapCoordinates(spawnedGrid, new MapCoordinates(Vector2.Zero, mapId));
-        _dungeon.GenerateDungeon(dungeonProto, dungeonProto.ID, spawnedGrid.Owner, spawnedGrid.Comp, Vector2i.Zero, _random.Next(), spawnCoords); // Frontier: add dungeonProto.ID
+        _dungeon.GenerateDungeon(dungeonProto, dungeonProtoId, spawnedGrid.Owner, spawnedGrid.Comp, Vector2i.Zero, _random.Next(), spawnCoords);
 
         spawned = spawnedGrid.Owner;
         component.MapsUid.Add(mapId);
@@ -165,20 +179,20 @@ public sealed class BluespaceErrorRule : StationEventSystem<BluespaceErrorRuleCo
         group.Paths.Add(path);
 
         // Do we support maps with multiple grids?
-        if (_loader.TryLoad(mapId, path.ToString(), out var ent) && ent.Count == 1)
+        if (_loader.TryLoadGrid(mapId, path, out var ent))
         {
-            if (HasComp<ShuttleComponent>(ent[0]))
+            if (HasComp<ShuttleComponent>(ent.Value))
             {
-                _shuttle.TryFTLProximity(ent[0], spawnCoords);
+                _shuttle.TryFTLProximity(ent.Value.Owner, spawnCoords);
             }
 
             if (group.NameGrid)
             {
                 var name = path.FilenameWithoutExtension;
-                _metadata.SetEntityName(ent[0], name);
+                _metadata.SetEntityName(ent.Value, name);
             }
 
-            spawned = ent[0];
+            spawned = ent.Value;
             return true;
         }
 
@@ -243,21 +257,21 @@ public sealed class BluespaceErrorRule : StationEventSystem<BluespaceErrorRuleCo
 
                 foreach (var mob in playerMobs)
                 {
-                    _transform.SetCoordinates(mob.Entity.Owner, new EntityCoordinates(mob.MapUid, mob.LocalPosition));
+                    _transform.SetCoordinates(mob.Entity.Owner, new EntityCoordinates(mob.MapUid, mob.MapPosition));
                 }
 
-                var queryBank = EntityQuery<StationBankAccountComponent>();
-                foreach (var account in queryBank)
+                foreach (var (account, rewardCoeff) in component.RewardAccounts)
                 {
-                    _cargo.DeductFunds(account, (int)-(gridValue * component.NfsdRewardFactor));
+                    var reward = (int)(gridValue * rewardCoeff);
+                    _bank.TrySectorDeposit(account, reward, LedgerEntryType.BluespaceReward);
                 }
             }
         }
 
         foreach (MapId mapId in component.MapsUid)
         {
-            if (_mapManager.MapExists(mapId))
-                _mapManager.DeleteMap(mapId);
+            if (_map.MapExists(mapId))
+                _map.DeleteMap(mapId);
         }
     }
 }

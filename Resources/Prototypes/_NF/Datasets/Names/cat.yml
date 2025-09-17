@@ -1,61 +1,49 @@
-- type: dataset
-  id: names_cat
+# Unique pets
+- type: localizedDataset
+  id: NamesCatClarpy
   values:
-  - Искорка
-  - Сумрак
-  - Луна
-  - Пятнышко
-  - Барсик
-  - Оникс
-  - Такс
-  - Перчик
-  - Лапка
-  - Салли
-  - Косточка
-  - Печенька
-  - Тапок
-  - Салем
-  - Мистик
-  - Песчинка
-  - Бубенчик
-  - Фрикаделька
-  - Кот в Сапогах
-  - Капелька
-  - Призрак
-  - Кофеёк
-  - Золушка
-  - По
-  - Бингус
-  - Джингус
-  - Пума
-  - Бархат
-  - Закат
-  - Гудини
-  - Волшебник
-  - Доза
-  - Ванилька
-  - Тень
-  - Мэрлин
-  - Маркус
-  - Ветерок
-  - Бубуська
-  - Крабби
-  - Кузя
-  - Мурчалка
-  - Полуночник
-  - Жорик
-  - Йосик
-  - Каша
-  - Япа
-  - Шлёпа
-  - Уголёк
-  - Веснушка
-  - Мандаринка
-  - Бизнескот
-  - Пушинка
-  - Мяфля
-  - Симба
-  - Том
-  - Джерри
-  - Зекинс
-  - Пупсик
+    prefix: names-cat-clarpy-dataset-
+    count: 4
+
+- type: localizedDataset
+  id: NamesCatMistake
+  values:
+    prefix: names-cat-mistake-dataset-
+    count: 3
+
+# Other pets
+- type: localizedDataset
+  id: NamesCatCult
+  values:
+    prefix: names-cat-cult-dataset-
+    count: 31
+
+- type: localizedDataset
+  id: NamesCatSpace
+  values:
+    prefix: names-cat-space-dataset-
+    count: 43
+
+- type: localizedDataset
+  id: NamesCatCaracal
+  values:
+    prefix: names-cat-caracal-dataset-
+    count: 43
+
+- type: localizedDataset
+  id: NamesCatBingus
+  values:
+    prefix: names-cat-bingus-dataset-
+    count: 59
+
+- type: localizedDataset
+  id: NamesCatCalico
+  values:
+    prefix: names-cat-calico-dataset-
+    count: 60
+
+- type: localizedDataset
+  id: NamesCat
+  values:
+    prefix: names-cat-dataset-
+    count: 59

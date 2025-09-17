@@ -5,14 +5,16 @@
   - type: StationEvent
     startAnnouncement: station-event-bluespace-cache-start-announcement
     startAudio:
-      path: /Audio/Announcements/attention.ogg
+      path: /Audio/_NF/Announcements/PocketSizedAndy/andy2_bluespace_cache_arrival.ogg
     warningAnnouncement: station-event-bluespace-cache-warning-announcement
     endAnnouncement: station-event-bluespace-cache-end-announcement
+    endAudio:
+      path: /Audio/_NF/Announcements/PocketSizedAndy/andy2_bluespace_cache_leave.ogg
     earliestStart: 100
     weight: 5
     duration: 1350
     maxDuration: 1560
-    reoccurrenceDelay: 480 # 8 hours
+    reoccurrenceDelay: 360 # 6 hours
     requiredJobs:
       Sheriff: 1
   - type: BluespaceErrorRule
@@ -29,11 +31,15 @@
         - type: IFF
           color: "#E10F9B"
         - type: Shuttle
-          angularDamping: 999999
-          linearDamping: 999999
+        - type: LinkedLifecycleGridParent
+        - type: ProtectedGrid
+          preventArtifactTriggers: true
+        - type: PreventPilot
+        - type: ForceAnchor # Added post-FTL, so anchoring is fine.
         paths:
-        - /Maps/_NF/Bluespace/cache.yml
-    nfsdRewardFactor: 1
+        - /Maps/Forge/Events/Periodic/Syndicate/syndicateVault.yml #Corvax-Frontier
+    rewardAccounts:
+      Nfsd: 1.0
 
 - type: entity
   id: BluespaceVaultError
@@ -42,16 +48,16 @@
   - type: StationEvent
     startAnnouncement: station-event-bluespace-vault-start-announcement
     startAudio:
-      path: /Audio/Announcements/attention.ogg
-    warningAnnouncement: station-event-bluespace-vault-warning-announcement
+      path: /Audio/_NF/Announcements/PocketSizedAndy/andy2_bluespace_vault_arrival.ogg
     endAnnouncement: station-event-bluespace-vault-end-announcement
+    endAudio:
+      path: /Audio/_NF/Announcements/PocketSizedAndy/andy2_bluespace_vault_leave.ogg
+    warningAnnouncement: station-event-bluespace-vault-warning-announcement
     earliestStart: 100
     weight: 5
     duration: 1020
     maxDuration: 1350
-    reoccurrenceDelay: 480 # 8 hours
-    requiredJobs:
-      Sheriff: 1
+    reoccurrenceDelay: 360 # 6 hours
   - type: BluespaceErrorRule
     groups:
       grid: !type:GridSpawnGroup
@@ -65,13 +71,18 @@
           inherent: true
         - type: IFF
           color: "#E10F9B"
-        - type: Shuttle
-          angularDamping: 999999
-          linearDamping: 999999
+        - type: LinkedLifecycleGridParent
+        - type: ProtectedGrid
+          preventArtifactTriggers: true
+        - type: PreventPilot
+        - type: ForceAnchor
         paths:
-        - /Maps/_NF/Bluespace/vault.yml
-    nfsdRewardFactor: 1
-
+        - /Maps/Forge/Events/Periodic/NanoTrasen/storageNt.yml #Corvax-Frontier
+    rewardAccounts:
+      Nfsd: 0.25
+      Frontier: 0.25
+      Medical: 0.25
+      Edison: 0.25
 - type: entity
   id: BluespaceVaultSmallError
   parent: BaseStationEventShortDelay
@@ -79,17 +90,17 @@
   - type: StationEvent
     startAnnouncement: station-event-bluespace-vault-start-announcement
     startAudio:
-      path: /Audio/Announcements/attention.ogg
-    warningAnnouncement: station-event-bluespace-vault-warning-announcement
+      path: /Audio/_NF/Announcements/PocketSizedAndy/andy2_bluespace_vault_arrival.ogg
     endAnnouncement: station-event-bluespace-vault-end-announcement
+    endAudio:
+      path: /Audio/_NF/Announcements/PocketSizedAndy/andy2_bluespace_vault_leave.ogg
+    warningAnnouncement: station-event-bluespace-vault-warning-announcement
     earliestStart: 100
     maximumPlayers: 30
     weight: 5
     duration: 590
     maxDuration: 780
-    reoccurrenceDelay: 480 # 8 hours
-    requiredJobs:
-      Sheriff: 1
+    reoccurrenceDelay: 360 # 6 hours
   - type: BluespaceErrorRule
     groups:
       grid: !type:GridSpawnGroup
@@ -103,13 +114,18 @@
           inherent: true
         - type: IFF
           color: "#E10F9B"
-        - type: Shuttle
-          angularDamping: 999999
-          linearDamping: 999999
+        - type: LinkedLifecycleGridParent
+        - type: ProtectedGrid
+          preventArtifactTriggers: true
+        - type: PreventPilot
+        - type: ForceAnchor
         paths:
-        - /Maps/_NF/Bluespace/vaultsmall.yml
-    nfsdRewardFactor: 1
-
+        - /Maps/Forge/Events/Periodic/NanoTrasen/storageNtSmall.yml #Corvax-Frontier
+    rewardAccounts:
+      Nfsd: 0.25
+      Frontier: 0.25
+      Medical: 0.25
+      Edison: 0.25
 - type: entity
   id: BluespaceSyndicateFTLInterception
   parent: BaseStationEventShortDelay
@@ -117,15 +133,17 @@
   - type: StationEvent
     startAnnouncement: station-event-bluespace-generic-ftl-start-announcement
     startAudio:
-      path: /Audio/Misc/notice1.ogg
+      path: /Audio/_NF/Announcements/PocketSizedAndy/andy2_bluespace_ship_arrival.ogg
     warningAnnouncement: station-event-bluespace-generic-ftl-warning-announcement
     endAnnouncement: station-event-bluespace-generic-ftl-end-announcement
+    endAudio:
+      path: /Audio/_NF/Announcements/PocketSizedAndy/andy2_bluespace_ship_leave.ogg
     earliestStart: 80
     minimumPlayers: 15
     weight: 1
     duration: 1800
     maxDuration: 2400
-    reoccurrenceDelay: 480 # Only once per shift possible
+    reoccurrenceDelay: 360 # 6 hours
   - type: BluespaceErrorRule
     groups:
       grid: !type:GridSpawnGroup
@@ -139,11 +157,13 @@
           inherent: true
         - type: IFF
           color: "#E10F9B"
-        - type: Shuttle
-          angularDamping: 999999
-          linearDamping: 999999
+        - type: LinkedLifecycleGridParent
+        - type: ProtectedGrid
+          preventArtifactTriggers: true
+        - type: PreventPilot
+        - type: ForceAnchor
         paths:
-        - /Maps/_NF/Bluespace/syndieftlintercept.yml
+        - /Maps/Forge/Events/Periodic/Syndicate/syndieftlintercept.yml #Corvax-Frontier
 
 - type: entity
   id: BluespaceWizardFederationScout
@@ -152,15 +172,17 @@
   - type: StationEvent
     startAnnouncement: station-event-bluespace-generic-ftl-start-announcement
     startAudio:
-      path: /Audio/Misc/notice1.ogg
+      path: /Audio/_NF/Announcements/PocketSizedAndy/andy2_bluespace_ship_arrival.ogg
     warningAnnouncement: station-event-bluespace-generic-ftl-warning-announcement
     endAnnouncement: station-event-bluespace-generic-ftl-end-announcement
+    endAudio:
+      path: /Audio/_NF/Announcements/PocketSizedAndy/andy2_bluespace_ship_leave.ogg
     earliestStart: 100
     minimumPlayers: 15
     weight: 1
     duration: 900
     maxDuration: 1200
-    reoccurrenceDelay: 480 # 8 hours
+    reoccurrenceDelay: 360 # 6 hours
   - type: BluespaceErrorRule
     groups:
       grid: !type:GridSpawnGroup
@@ -174,11 +196,13 @@
           inherent: true
         - type: IFF
           color: "#E10F9B"
-        - type: Shuttle
-          angularDamping: 999999
-          linearDamping: 999999
+        - type: LinkedLifecycleGridParent
+        - type: ProtectedGrid
+          preventArtifactTriggers: true
+        - type: PreventPilot
+        - type: ForceAnchor
         paths:
-        - /Maps/_NF/Bluespace/wizardprobealt.yml
+        - /Maps/Forge/Events/Periodic/Magic/shuttleFederationMages.yml #Corvax-Frontier
 
 - type: entity
   id: BluespaceBloodMoon
@@ -187,15 +211,17 @@
   - type: StationEvent
     startAnnouncement: station-event-bluespace-generic-ftl-start-announcement
     startAudio:
-      path: /Audio/Misc/notice1.ogg
+      path: /Audio/_NF/Announcements/PocketSizedAndy/andy2_bluespace_ship_arrival.ogg
     warningAnnouncement: station-event-bluespace-generic-ftl-warning-announcement
     endAnnouncement: station-event-bluespace-generic-ftl-end-announcement
+    endAudio:
+      path: /Audio/_NF/Announcements/PocketSizedAndy/andy2_bluespace_ship_leave.ogg
     earliestStart: 80
     minimumPlayers: 15
     weight: 1
     duration: 1800
     maxDuration: 2400
-    reoccurrenceDelay: 480 # 8 hours
+    reoccurrenceDelay: 360 # 6 hours
   - type: BluespaceErrorRule
     groups:
       grid: !type:GridSpawnGroup
@@ -209,22 +235,26 @@
           inherent: true
         - type: IFF
           color: "#E10F9B"
-        - type: Shuttle
-          angularDamping: 999999
-          linearDamping: 999999
+        - type: LinkedLifecycleGridParent
+        - type: ProtectedGrid
+          preventArtifactTriggers: true
+        - type: PreventPilot
+        - type: ForceAnchor
         paths:
-        - /Maps/_NF/Bluespace/bloodmoon.yml
+        - /Maps/Forge/Events/Periodic/Cult/bloodmoon.yml #Corvax-Frontier
 
 - type: entity
   id: BluespaceCave
   parent: BaseStationEventShortDelay
   components:
   - type: StationEvent
-    startAnnouncement: station-event-bluespace-generic-ftl-start-announcement
+    startAnnouncement: station-event-bluespace-asteroid-start-announcement
     startAudio:
-      path: /Audio/Misc/notice1.ogg
+      path: /Audio/_NF/Announcements/PocketSizedAndy/andy2_bluespace_asteroid_arrival.ogg
     warningAnnouncement: station-event-bluespace-generic-ftl-warning-announcement
-    endAnnouncement: station-event-bluespace-generic-ftl-end-announcement
+    endAnnouncement: station-event-bluespace-asteroid-end-announcement
+    endAudio:
+      path: /Audio/_NF/Announcements/PocketSizedAndy/andy2_bluespace_asteroid_leave.ogg
     earliestStart: 20
     weight: 1
     duration: 1800
@@ -242,22 +272,27 @@
           enabled: true
           inherent: true
         - type: IFF
-        - type: Shuttle
-          angularDamping: 999999
-          linearDamping: 999999
+        - type: LinkedLifecycleGridParent
+        - type: ProtectedGrid
+          preventArtifactTriggers: true
+        - type: PreventPilot
+        - type: ForceAnchor
         paths:
-        - /Maps/_NF/Bluespace/cave.yml
+        - /Maps/Forge/Events/Periodic/Caves/cave.yml #Corvax-Frontier
 
 - type: entity
-  id: BluespaceBrokenMcDelivery
+  id: NFBluespaceBrokenMcDelivery
   parent: BaseStationEventShortDelay
   components:
   - type: StationEvent
+  # TODO: Maybe change start & end to unique Voice over audio
     startAnnouncement: station-event-bluespace-generic-ftl-start-announcement
     startAudio:
-      path: /Audio/Misc/notice1.ogg
+      path: /Audio/_NF/Announcements/PocketSizedAndy/andy2_bluespace_ship_arrival.ogg
     warningAnnouncement: station-event-bluespace-generic-ftl-warning-announcement
     endAnnouncement: station-event-bluespace-generic-ftl-end-announcement
+    endAudio:
+      path: /Audio/_NF/Announcements/PocketSizedAndy/andy2_bluespace_ship_leave.ogg
     earliestStart: 20
     maximumPlayers: 20
     weight: 5
@@ -275,5 +310,9 @@
         maximumDistance: 2500
         addComponents:
         - type: IFF
+        - type: LinkedLifecycleGridParent
+        - type: ProtectedGrid
+          preventArtifactTriggers: true
+        - type: PreventPilot
         paths:
-        - /Maps/_NF/Bluespace/mcevent.yml
+        - /Maps/Forge/Events/Periodic/Cargo/mcevent.yml #Corvax-Frontier

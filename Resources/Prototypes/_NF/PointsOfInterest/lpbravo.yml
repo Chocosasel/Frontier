@@ -10,20 +10,30 @@
 # just a little loot n shoot POI. Pretty much the second POI to even exist
 - type: pointOfInterest
   id: LPBravo
+  parent: BasePOI
   name: 'Прослушивающий пункт Браво'
-  rangeMin: 4000
-  rangeMax: 6000
-  IFFColor: "#C83737" #red the color of ebil
-  IFFFlags: [HideLabel, Hide] # Invisible
-  allowIFFChanges: true
-  hideWarp: true
+  minimumDistance: 4000
+  maximumDistance: 6000
   spawnGroup: SyndicateFOB
-  gridPath: /Maps/_NF/POI/lpbravo.yml
+  gridPath: /Maps/Forge/POI/lpbravo.yml #Forge-Change
+  hideWarp: true
+  addComponents:
+  - type: IFF
+    color: "#C83737"
+    flags: [HideLabel, Hide]
+    readOnly: false
+  - type: SyndicateFOB # For pinpointer
+  - type: SolarPoweredGrid
+    trackOnInit: true
+    doNotCull: true
+  - type: ProtectedGrid
+    noGridCollision: true #Forge-Change
+  - type: BlockEvacuation #Forge-Change
 
 - type: gameMap
   id: LPBravo
   mapName: 'Прослушивающий пункт Браво'
-  mapPath: /Maps/_NF/POI/lpbravo.yml
+  mapPath: /Maps/Forge/POI/lpbravo.yml #Forge-Change
   minPlayers: 0
   stations:
     LPBravo:
@@ -35,3 +45,4 @@
         - type: StationJobs
           availableJobs: {}
         - type: StationDeadDropHintExempt
+        - type: BindToStationVariationPassExemption

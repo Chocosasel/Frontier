@@ -4,11 +4,13 @@
     ClothingBackpackMedical: 4
     ClothingBackpackSatchelMedical: 4
     ClothingBackpackDuffelMedical: 4
+    ClothingBackpackDuffelTrauma: 4 # Frontier
     ClothingBackpackMessengerMedical: 4 # Frontier
     ClothingOuterEVASuitMedic: 4 # Frontier
     ClothingUniformJumpsuitMedicalDoctor: 4
     ClothingUniformJumpskirtMedicalDoctor: 4
     ClothingBeltMedical: 4
+    ClothingHandsGlovesNitrileInsulated: 4
     ClothingHeadHatBeretMedic: 4
     ClothingHeadNurseHat: 4
     ClothingOuterCoatLab: 4
@@ -20,7 +22,7 @@
     ClothingEyesHudMedical: 4
     ClothingEyesEyepatchHudMedical: 4 # Frontier
     ClothingHeadsetMedical: 4
-    EncryptionKeyMedical: 10
+#    EncryptionKeyMedical: 10 # FrontierCorvax
     ClothingMaskBreathMedical: 4
     ClothingOuterHospitalGown: 5
     UniformScrubsColorGreen: 4
@@ -37,7 +39,7 @@
     ClothingOuterCoatParamedicWB: 2
     ClothingHeadHatParamedicsoft: 2
     ClothingBeltMedicalEMT: 4 # Frontier, empty
-    ClothingOuterHardsuitVoidParamed: 1
+#    ClothingOuterHardsuitVoidParamed: 1 #CorvaxFrontier
 # Virology:
     ClothingBackpackVirology: 2
     ClothingBackpackSatchelVirology: 2
@@ -86,3 +88,6 @@
 # CMO:
   contrabandInventory: # Frontier - Hidden inventory
     ClothingUniformJumpskirtOfLife: 1
+    ToyFigurineMedicalDoctor: 1
+    ToyFigurineParamedic: 1
+    ToyFigurineChiefMedicalOfficer: 1

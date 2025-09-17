@@ -1,3 +1,4 @@
+# region FRONTIER - IGNORED
 # Tier 1
 
 - type: technology
@@ -10,13 +11,9 @@
   tier: 1
   cost: 5000
   recipeUnlocks:
-  - WeaponProtoKineticAccelerator
-#  - ShuttleGunKineticCircuitboard # Frontier - Hold on there pardner
+  # - WeaponProtoKineticAccelerator # Frontier: moved to NFWeaponPka
+  - ShuttleGunKineticCircuitboard
   # These are roundstart but not replenishable for salvage
-  - WeaponCrusher
-  - WeaponCrusherDagger
-  # This is not roundstart since its a direct upgrade
-  - WeaponCrusherGlaive
 
 - type: technology
   id: DraconicMunitions
@@ -31,18 +28,14 @@
   - BoxShotgunIncendiary
   - MagazineRifleIncendiary
   - MagazinePistolIncendiary
+  - MagazinePistolSubMachineGunIncendiary
   - MagazineLightRifleIncendiary
   - SpeedLoaderMagnumIncendiary
-  - SpeedLoaderRifleHeavyIncendiary # Frontier
   - MagazineShotgunIncendiary
   - MagazineBoxPistolIncendiary
   - MagazineBoxMagnumIncendiary
   - MagazineBoxLightRifleIncendiary
   - MagazineBoxRifleIncendiary
-  - MagazineVector22Incendiary #CorvaxFrontier
-  - MagazineBoxVector22Incendiary #CorvaxFrontier
-  - MagazineVector45Incendiary #CorvaxFrontier
-  - MagazineBoxVector45Incendiary #CorvaxFrontier
 
 - type: technology
   id: WeaponizedLaserManipulation
@@ -70,16 +63,8 @@
   - BoxShellTranquilizer
   - BoxBeanbag
   - WeaponDisabler
-  - MagazineBoxLightRifleRubber # Frontier
-  - MagazineBoxMagnumRubber # Frontier
-  - MagazineBoxPistolRubber # Frontier
-  - MagazineBoxRifleRubber # Frontier
-  - BoxSmokeKS23 # Corvax-Frontier
-  - BoxFlashbangKS23 # Corvax-Frontier
-  - MagazineBoxVector22Practice #CorvaxFrontier
-  - MagazineVector22Practice #CorvaxFrontier
-  - MagazineBoxVector45Practice #CorvaxFrontier
-  - MagazineVector45Practice #CorvaxFrontier
+  - BoxSmokeKS23 # Forge-Change
+  - BoxFlashbangKS23 # Forge-Change
 
 - type: technology
   id: UraniumMunitions
@@ -93,18 +78,14 @@
   recipeUnlocks:
   - MagazineRifleUranium
   - MagazinePistolUranium
+  - MagazinePistolSubMachineGunUranium
   - MagazineLightRifleUranium
   - SpeedLoaderMagnumUranium
-  - SpeedLoaderRifleHeavyUranium # Frontier
   - MagazineBoxPistolUranium
   - MagazineBoxMagnumUranium
   - MagazineBoxLightRifleUranium
   - MagazineBoxRifleUranium
   - BoxShotgunUranium
-  - MagazineBoxVector22Uranium #CorvaxFrontier
-  - MagazineVector22Uranium #CorvaxFrontier
-  - MagazineBoxVector45Uranium #CorvaxFrontier
-  - MagazineVector45Uranium #CorvaxFrontier
 
 - type: technology
   id: AdvancedRiotControl
@@ -138,7 +119,6 @@
   - FlashPayload
   - ExplosivePayload
   - ChemicalPayload
-  - NFBlueprintSignallerAdvanced # Frontier
 
 - type: technology
   id: SpecialMeans
@@ -179,6 +159,20 @@
   - WeaponXrayCannon
 
 - type: technology
+  id: KineticModifications
+  name: research-technology-kinetic-modifications
+  icon:
+    sprite: Objects/Tools/upgrade.rsi
+    state: display
+  discipline: Arsenal
+  tier: 2
+  cost: 7500
+  recipeUnlocks:
+  - PKAUpgradeDamage
+  - PKAUpgradeRange
+  - PKAUpgradeFireRate
+
+- type: technology
   id: BasicShuttleArmament
   name: research-technology-basic-shuttle-armament
   icon:
@@ -214,22 +208,18 @@
   recipeUnlocks:
   - WeaponAdvancedLaser
   - PortableRecharger
-  - WeaponAntiqueLaserNF # Frontier
-  - NFBlueprintWeaponAntiqueLaser # Frontier
-  - NFBlueprintPortableRecharger # Frontier
 
 - type: technology
-  id: ExperimentalBatteryAmmo
-  name: research-technology-experimental-battery-ammo
+  id: ThermalWeaponry
+  name: research-technology-thermal-weaponry
   icon:
-    sprite: Objects/Weapons/Guns/Battery/svalinn.rsi
+    sprite: Objects/Weapons/Guns/Battery/temp_gun.rsi
     state: icon
   discipline: Arsenal
   tier: 3
   cost: 15000
   recipeUnlocks:
-  - WeaponLaserSvalinn
-  - NFBlueprintWeaponLaserSvalinn # Frontier
+  - WeaponTemperatureGun
 
 - type: technology
   id: AdvancedShuttleWeapon
@@ -251,7 +241,7 @@
   id: VariousShuttleWeapons
   name: research-technology-various-shuttle-weapons
   icon:
-    sprite: Corvax/Objects/Weapons/Guns/Ammunition/Magazine/rifle_cartridges.rsi
+    sprite: Forge/Objects/Weapons/Guns/Ammunition/Magazine/rifle_cartridges.rsi
     state: 35base
   discipline: Arsenal
   tier: 3
@@ -268,3 +258,19 @@
     - ShuttleMagnumRifleAmmoBox
   technologyPrerequisites:
   - BasicShuttleArmament
+
+- type: technology # Corvax-Frontier
+  id: AdvancedSalvage
+  name: research-technology-advanced-salvage
+  icon:
+    sprite: Forge/Objects/Weapons/Melee/magmitecrusher.rsi
+    state: icon
+  discipline: Arsenal
+  tier: 3
+  cost: 20000
+  recipeUnlocks:
+    - WeaponMagmiteCrusher
+    - WeaponMagmiteCrusherGlaive
+  technologyPrerequisites:
+  - SalvageWeapons
+  - MagnetsTech

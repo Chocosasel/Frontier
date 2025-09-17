@@ -13,6 +13,7 @@
     - alertType: Ensnared
     - category: Buckled
     - alertType: Pulling
+    - alertType: Walking
     - category: Piloting
     - alertType: Corporeal
     - alertType: Stun
@@ -23,7 +24,9 @@
     - category: Hunger
     - category: Thirst
     - alertType: Magboots
+    - alertType: Rooted
     - alertType: Pacified
+    - alertType: Offer # Corvax-Frontier
 
 - type: entity
   id: AlertSpriteView
@@ -91,6 +94,14 @@
   name: alerts-on-fire-name
   description: alerts-on-fire-desc
 
+- type: alert # Corvax-Frontier
+  id: Offer
+  clickEvent: !type:AcceptOfferAlertEvent
+  icons:
+  - sprite: Forge/Alerts/offer_item.rsi
+    state: offer_item
+  name: alerts-offer-name
+  description: alerts-offer-desc
 
 - type: alert
   id: Cold
@@ -127,12 +138,30 @@
   description: alerts-weightless-desc
 
 - type: alert
+  id: Walking
+  icons:
+  - sprite: /Textures/Interface/Alerts/walking.rsi
+    state: walking
+  name: alerts-walking-name
+  description: alerts-walking-desc
+  clientHandled: true
+
+- type: alert
   id: Stun
   icons:
   - sprite: /Textures/Objects/Weapons/Melee/stunbaton.rsi #Should probably draw a proper icon
     state: stunbaton_off
   name: alerts-stunned-name
   description: alerts-stunned-desc
+
+- type: alert
+  id: Knockdown
+  clickEvent: !type:KnockedDownAlertEvent
+  icons:
+  - sprite: /Textures/Interface/Alerts/stunnable.rsi
+    state: knocked-down
+  name: alerts-knockdown-name
+  description: alerts-knockdown-desc
 
 - type: alert
   id: Handcuffed

@@ -23,7 +23,7 @@ admin-notes-hide = Скрыть
 admin-notes-delete-confirm = Вы уверены?
 admin-notes-edited = Последнее изменение от { $author } в { $date }
 admin-notes-unbanned = Разбанил { $admin } в { $date }
-admin-notes-message-desc =    [color=white]Вы получили { $count ->
+admin-notes-message-desc = [color=white]Вы получили { $count ->
         [1] новое сообщение от администрации
        *[other] новых сообщений от администрации
     } с момента последней игры на сервере.[/color]
@@ -74,3 +74,10 @@ admin-remarks-command-error = Админ замечания были отклю�
 admin-remarks-title = Админ замечания
 # Misc
 system-user = [Система]
+admin-note-button-minutes = Минут
+admin-note-button-hours = Часов
+admin-note-button-days = Дней
+admin-note-button-weeks = Недель
+admin-note-button-months = Месяцев
+admin-note-button-years = Лет
+admin-note-button-centuries = Веков

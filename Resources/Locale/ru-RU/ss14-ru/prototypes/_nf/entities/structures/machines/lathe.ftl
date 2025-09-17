@@ -12,3 +12,9 @@ ent-MercenaryTechFabHacked = взломанный техфаб наёмника
     .desc = Печатает снаряжение необходимое каждому наёмнику.
 ent-BlueprintLithograph = литографическая машина
     .desc = Печатает чертежи.
+
+ent-ScrapProcessor = переработчик лома
+    .desc = Производит необходимые материалы из старого лома.
+ent-BiogeneratorFill = { ent-Biogenerator }
+    .suffix = Биомасса, 50
+    .desc = { ent-Biogenerator.desc }

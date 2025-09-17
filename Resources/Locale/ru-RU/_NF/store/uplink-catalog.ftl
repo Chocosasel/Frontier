@@ -56,6 +56,12 @@ uplink-security-ks23-name = Дробовик KS23
 uplink-security-ks23-desc = Особый дробовик, который может стрелять особыми патронами.
 uplink-security-research-disk-10000-name = Исследовательский диск
 uplink-security-research-disk-10000-desc = Диск для сервера РНД с 10000 очками.
+uplink-security-WeaponLightMachineGunL2RPK-name = РПК-L2
+uplink-security-WeaponLightMachineGunL2RPK-desc = РПК-L2 Крупнокалиберный пулемет семейства TechnicLogistic, созданный по образцу не малоизвестного L6, данный пулемет отличается повышенной точностью и дешевизной производства, однако особенности конструкции сделали его очень громоздким.
+uplink-security-WeaponSubMachineGunScorpion-name = Скорпион
+uplink-security-WeaponSubMachineGunScorpion-desc = Компактный пистолет пулемёт созданный компанией TechnicLogistic для сил самообороны. Созданный на базе коротко ствольного пп он поставляется для сил ДСБФ по заказу Nanotrasen.
+uplink-security-WeaponRifleScar12-name = Scar12
+uplink-security-WeaponRifleScar12-desc = Scar-12 боевая винтовка созданная TechnicLogistic, для нужд собственной армии благодаря эффективности и точности является одним из часто встречающихся образцов на черном рынке, на текущий момент поставляется силам дсбф по спец заказу НТ.
 uplink-security-energygun-name = Энергетическое оружие
 uplink-security-energygun-desc = Полуавтоматический энергопистолет, способный стрелять как несмертельными парализующими, так и смертоносными энергетическими зарядами. Имеет встроенный аккумулятор, но требует подзарядки на специальной станции.
 uplink-security-emprpg-name = РПГ-7
@@ -209,3 +215,85 @@ uplink-pirate-greengrenade-name = Зелёная граната
 uplink-pirate-greengrenade-desc = Граната с отвратным газом, от которой в голове становится мутно.
 uplink-pirate-graygrenade-name = Серая граната
 uplink-pirate-graygrenade-desc = Тяжёлая граната, словно пушечное ядро в руке.
+uplink-pirate-radio-implanter-name = Радио Имплантер
+uplink-pirate-radio-implanter-desc = Имплантирует автономный радио-чип, позволяющий вести переговоры на определённой частоте без гарнитуры.
+uplink-pirate-cannonball-emp-name = Сундук ЭМИ ядер
+uplink-pirate-cannonball-emp-desc = Сундук с ядрами, вызывающими ЭМИ имплульс при попадании.
+uplink-security-30riflemagazine-rubber-name = Коробка магазинов калибра .30 винтовочные (резина)
+uplink-security-30riflemagazine-rubber-desc = Коробка, содержащая 4 полных магазина калибра .30 винтовочные (Резина)
+uplink-security-20riflemagazine-rubber-name = Коробка магазинов калибра .20 (резина)
+uplink-security-20riflemagazine-rubber-desc = Коробка, содержащая 4 полных магазина калибра .20 (Резина)
+uplink-security-magazinepistol-rubber-name = Коробка магазинов калибра .35 (резина)
+uplink-security-magazinepistol-rubber-desc = Коробка, содержащая 4 полных магазина .35 (Резина)
+uplink-security-mk32-name = MK32
+uplink-security-mk32-desc = Пистолет Mark 32 для наступательных операций.
+
+uplink-security-vulcan-name = Vulcan
+uplink-security-vulcan-desc = Тяжелая штурмовая винтовка с возможностью выбора режима огня. Использует патроны калибра .30.
+
+uplink-security-lasercanon-name = Лазерная Пушка
+uplink-security-lasercanon-desc = Мощная снайперская лазерная винтовка повышенной мощности.
+
+uplink-security-contraband-forensics-module-name = Контрабанда: Криминалистический Модуль
+uplink-security-contraband-forensics-module-desc = Программа для сканирования и обнаружения контрабандных тайников и капсул для получения наград. Устанавливается в криминалистический сканер.
+
+uplink-pirate-accessconfigurator-captain-name = Конфигуратор Доступа Черного Рынка
+uplink-pirate-accessconfigurator-captain-desc = Конфигуратор доступа, продающийся на черном рынке. Защити свою добычу пиратским доступом!
+
+uplink-pirate-pmag-name = Освободитель Машин
+uplink-pirate-pmag-desc = Удаляет DRM-защиту станционных машин. Лучший друг пирата.
+
+uplink-pirate-repair-kit-name = Пиратский Ремонтный Набор
+uplink-pirate-repair-kit-desc = Набор инструментов для починки пиратских компьютеров. На случай полосы невезения.
+
+uplink-pirate-ionized-dust-bag-name = Ионизированная Блюспейс Пыль
+uplink-pirate-ionized-dust-bag-desc = Мешок с пылью, которая может сбить пинпоинтеры с цели.
+
+uplink-pirate-pinpointer-target-scanner-name = Сканер Целей Пинпоинтера
+uplink-pirate-pinpointer-target-scanner-desc = Кустарный сканер, находящий объекты, на которые нацелены пинпоинтеры. Батарейки в комплекте.
+
+uplink-pirate-pirate-stitcher-name = Пиратский Станкок
+uplink-pirate-pirate-stitcher-desc = Плата для пиратского станка. Собирается для производства пиратской одежды и снаряжения!
+
+uplink-pirate-pouch-captain-name = Сумка Пиратского Капитана
+uplink-pirate-pouch-captain-desc = Эта сумка подчеркивает ваш статус капитана. Также удобна для хранения мелочей.
+
+uplink-pirate-pouch-name = Пиратская Сумка
+uplink-pirate-pouch-desc = Сумка для хранения различных предметов.
+
+uplink-spaceblade-syndicate-name = Контрабандный Космоклинок
+uplink-spaceblade-syndicate-desc = Сделан из настоящего металла!
+
+uplink-emag-pass-name = Одноразовый Эмаг
+uplink-emag-pass-desc = Карта для взлома устройств. Можно использовать три раза.
+
+uplink-revolver-ritland-name = Ритланд-45
+uplink-revolver-ritland-desc = Надежный тяжелый револьвер. Чувствуешь себя везучим, засранец?
+
+uplink-pistol-cobra45-desc = Прочный, надежный пистолет оперативника со встроенным глушителем. Использует патроны .45.
+
+uplink-pistol-magazine-cobra-name = Магазин для Cobra .45
+uplink-pistol-magazine-cobra-desc = Заполненный магазин для пистолета Cobra .45.
+
+uplink-speedloader-magnum-non-ap-name = Быстрый Зарядник .45
+uplink-speedloader-magnum-non-ap-desc = Быстрый зарядник на 6 патронов калибра .45.
+
+uplink-syndicate-segway-name = Синдикатский Сигвей
+uplink-syndicate-segway-desc = Передвигайся со стилем, не пачкая свои кроваво-красные ботинки.
+
+uplink-pirate-nightvision-name = очки ночного виденья
+uplink-pirate-nightvision-desc = Арх!!!! Я вижу все.
+
+uplink-security-nightvision-name = очки ночного виденья
+uplink-security-nightvision-desc = Я вижу все.
+
+uplink-clothing-nightvision-name = очки ночного виденья
+uplink-clothing-nightvision-desc = Я вижу все.
+
+uplink-clothing-nightvisionplus-name = очки ночного виденья улучшенные
+uplink-clothing-nightvisionplus-desc = Я вижу все.
+
+uplink-clothing-thermalvision-name = термальные очки
+uplink-clothing-thermalvision-desc = Видно теперь все!
+uplink-security-30riflemagazine-name = .30 винтовочные магизины
+uplink-security-30riflemagazine-desc = Коробка с 4 заполненными магазинами для винтовки .30.

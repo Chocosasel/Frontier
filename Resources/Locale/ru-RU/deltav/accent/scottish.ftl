@@ -3,7 +3,6 @@
 # https://en.wikipedia.org/wiki/Scottish_English
 # https://www.cs.stir.ac.uk/~kjt/general/scots.html
 
-
 # Русский постапокалиптический шотландский акцент
 
 accent-scottish-words-1 = девушка
@@ -282,7 +281,7 @@ accent-scottish-words-144 = идиот
 accent-scottish-words-replace-144 = придурок
 accent-scottish-words-145 = тупой
 accent-scottish-words-replace-145 = бестолковый
-accent-scottish-words-146 = сержант
+accent-scottish-words-146 = лейтенант
 accent-scottish-words-replace-146 = служивый
 accent-scottish-words-147 = охранник
 accent-scottish-words-replace-147 = сторожевой
